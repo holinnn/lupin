@@ -1,4 +1,5 @@
 # coding: utf-8
+from lupin import Constant
 from tests.fixtures import Thief
 
 
@@ -14,3 +15,11 @@ class TestDump(object):
     def test_returns_a_dictionary(self, thief_schema, thief, thief_data):
         data = thief_schema.dump(thief)
         assert data == thief_data
+
+
+class TestAddField(object):
+    def test_add_new_field_to_schema(self, thief_schema, thief, thief_data):
+        thief_schema.add_field("age", Constant(28))
+        result = thief_schema.dump(thief)
+        thief_data["age"] = 28
+        assert result == thief_data

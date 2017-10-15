@@ -6,6 +6,15 @@ class Schema(object):
         """
         self._fields = fields
 
+    def add_field(self, name, field):
+        """Add new field to schema.
+
+        Args:
+            name (str): field name
+            field (Field): a field
+        """
+        self._fields[name] = field
+
     def load(self, cls, data):
         """Loads an instance of cls from JSON data
 
