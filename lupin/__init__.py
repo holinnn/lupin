@@ -6,6 +6,7 @@ try:
 except:
     __version__ = 'unknown'
 
+from .object_factories import constructor, bind  # NOQA
 from .fields import *  # NOQA
 from .schema import Schema  # NOQA
 from .mapping import Mapping  # NOQA

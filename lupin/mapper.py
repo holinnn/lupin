@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from . import Mapping
+from . import Mapping, bind
 
 
 class Mapper(object):
@@ -9,18 +9,19 @@ class Mapper(object):
     def __init__(self):
         self._mappings = defaultdict(list)
 
-    def register(self, cls, schema, default=False):
+    def register(self, cls, schema, default=False, factory=bind):
         """Associate a class with a schema
 
         Args:
             cls (class): a python class
             schema (Schema): schema that will be used to dump & load objects of klass
             default (bool): if True, this schema will be the default one for dumping instances of `cls`
+            factory (callable): factory method used to instantiate objects when loading from JSON
 
         Returns:
             Mapping
         """
-        mapping = Mapping(cls, schema)
+        mapping = Mapping(cls, schema, factory)
         mapping_index = 0 if default else len(self._mappings[cls])
         self._mappings[cls].insert(mapping_index, mapping)
         return mapping

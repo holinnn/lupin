@@ -1,3 +1,6 @@
+from . import bind
+
+
 class Schema(object):
     def __init__(self, fields):
         """
@@ -15,7 +18,7 @@ class Schema(object):
         """
         self._fields[name] = field
 
-    def load(self, cls, data):
+    def load(self, cls, data, factory=bind):
         """Loads an instance of cls from JSON data
 
         Args:
@@ -25,13 +28,14 @@ class Schema(object):
         Returns:
             object
         """
-        obj = cls.__new__(cls)
+        values = {}
         for key, field in self._fields.items():
             attr_name = field.binding or key
             raw_value = data.get(key)
             value = field.load(raw_value)
-            setattr(obj, attr_name, value)
-        return obj
+            values[attr_name] = value
+
+        return factory(cls, **values)
 
     def dump(self, obj):
         """Dumps object into a dictionnary
