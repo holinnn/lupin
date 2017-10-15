@@ -29,3 +29,19 @@ class Field(object):
             object
         """
         return value
+
+    def get_value(self, obj, key=None):
+        """Get JSON value of `key` attribute of object.
+        If field has been provided a `binding` then it will
+        override `key`
+
+        Args:
+            obj (object): object to get value from
+            key (str): attribute name
+
+        Returns:
+            object
+        """
+        key = self.binding or key
+        raw_value = getattr(obj, key)
+        return self.dump(raw_value)

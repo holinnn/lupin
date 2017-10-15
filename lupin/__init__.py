@@ -8,5 +8,5 @@ except:
 
 from .fields import *  # NOQA
 from .schema import Schema  # NOQA
+from .mapping import Mapping  # NOQA
 from .mapper import Mapper  # NOQA
-from .mappings import Mappings  # NOQA

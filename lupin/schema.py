@@ -1,10 +1,10 @@
 class Schema(object):
-    def __init__(self, schema):
+    def __init__(self, fields):
         """
         Args:
-            schema (dict): dictionary representing the schema
+            fields (dict): dictionary of fields
         """
-        self._schema = schema
+        self._fields = fields
 
     def load(self, cls, data):
         """Loads an instance of cls from JSON data
@@ -13,11 +13,11 @@ class Schema(object):
             cls (class): class to instantiate
             data (dict): JSON data
 
-        returns:
+        Returns:
             object
         """
         obj = cls.__new__(cls)
-        for key, field in self._schema.items():
+        for key, field in self._fields.items():
             attr_name = field.binding or key
             raw_value = data.get(key)
             value = field.load(raw_value)
@@ -29,13 +29,10 @@ class Schema(object):
 
         Args:
             obj (object): object to dump
+
         Returns:
             dict
         """
-        data = {}
-        for key, field in self._schema.items():
-            attr_name = field.binding or key
-            raw_value = getattr(obj, attr_name)
-            value = field.dump(raw_value)
-            data[key] = value
-        return data
+        return {key: field.get_value(obj, key)
+                for key, field
+                in self._fields.items()}

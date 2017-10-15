@@ -2,7 +2,7 @@ from datetime import datetime
 from . import Field
 
 
-class DatetimeField(Field):
+class Datetime(Field):
     """Field used to handle datetime values"""
 
     def __init__(self, format="%Y-%m-%dT%H:%M:%S", *args, **kwargs):

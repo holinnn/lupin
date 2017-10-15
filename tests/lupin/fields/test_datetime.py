@@ -1,11 +1,11 @@
 from datetime import datetime
-from lupin import DatetimeField
+from lupin import fields
 import pytest
 
 
 @pytest.fixture
 def field():
-    return DatetimeField()
+    return fields.Datetime()
 
 
 @pytest.fixture
