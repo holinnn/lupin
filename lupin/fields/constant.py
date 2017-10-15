@@ -9,7 +9,7 @@ class Constant(Field):
         Args:
             value (object): fixed value
         """
-        super().__init__(**kwargs)
+        super(Constant, self).__init__(**kwargs)
         self._value = value
 
     def load(self, value):

@@ -12,7 +12,7 @@ class Object(Field):
         Args:
             mapping (Mapping): mapping of nested object
         """
-        super().__init__(*args, **kwargs)
+        super(Object, self).__init__(*args, **kwargs)
         self._mapping = mapping
 
     def load(self, value):

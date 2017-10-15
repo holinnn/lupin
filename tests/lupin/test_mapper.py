@@ -1,3 +1,4 @@
+# coding: utf-8
 import pytest
 
 from lupin import Mapper, Mapping, Schema, String

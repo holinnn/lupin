@@ -11,7 +11,7 @@ class Datetime(Field):
             format (str): datetime format to use
         """
         self._format = format
-        super().__init__(*args, **kwargs)
+        super(Datetime, self).__init__(*args, **kwargs)
 
     def load(self, value):
         """Loads a datetime python object from a JSON string

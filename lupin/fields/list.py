@@ -11,7 +11,7 @@ class List(Field):
         Args:
             field (Field): a field handling list items
         """
-        super().__init__(**kwargs)
+        super(List, self).__init__(**kwargs)
         self._field = field
 
     def load(self, value):

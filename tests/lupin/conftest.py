@@ -1,8 +1,9 @@
+# coding: utf-8
 import pytest
 
 from lupin import Schema, String, Field, Constant
 
-from tests.fixtures import Thief, Painting, Jewel
+from ..fixtures import Thief, Painting, Jewel
 
 
 @pytest.fixture
