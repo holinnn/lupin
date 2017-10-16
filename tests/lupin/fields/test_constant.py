@@ -18,6 +18,6 @@ class TestDump(object):
         assert field.dump(None) == 46
 
 
-class TestGetValue(object):
+class TestExtractValue(object):
     def test_returns_fixed_value(self, field):
-        assert field.get_value(None) == 46
+        assert field.extract_value(None) == 46

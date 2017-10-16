@@ -30,12 +30,10 @@ class Schema(object):
         """
         values = {}
         for key, field in self._fields.items():
-            attr_name = field.binding or key
             raw_value = data.get(key)
-            value = field.load(raw_value)
-            values[attr_name] = value
+            field.inject_value(raw_value, values, key)
 
-        return factory(cls, **values)
+        return factory(cls, values)
 
     def dump(self, obj):
         """Dumps object into a dictionnary
@@ -46,6 +44,6 @@ class Schema(object):
         Returns:
             dict
         """
-        return {key: field.get_value(obj, key)
+        return {key: field.extract_value(obj, key)
                 for key, field
                 in self._fields.items()}

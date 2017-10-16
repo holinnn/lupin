@@ -1,11 +1,11 @@
-def constructor(cls, **kwargs):
+def constructor(cls, values):
     """Use class constructor to build a new object"""
-    return cls(**kwargs)
+    return cls(**values)
 
 
-def bind(cls, **kwargs):
+def bind(cls, values):
     """Create a new instance of class then bind attributes to instance"""
     obj = cls.__new__(cls)
-    for attr_name, value in kwargs.items():
+    for attr_name, value in values.items():
         setattr(obj, attr_name, value)
     return obj

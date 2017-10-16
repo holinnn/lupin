@@ -30,12 +30,15 @@ class Mapper(object):
         """Loads an instance of klass from JSON data
 
         Args:
-            data (dict): JSON data
+            data (dict|list): JSON data
             klass (class): class to instantiate
 
         returns:
             object
         """
+        if isinstance(data, (list, set, tuple)):
+            return [self.load(item, mapping) for item in data]
+
         return mapping.load(data)
 
     def dump(self, obj, mapping=None):
@@ -43,11 +46,14 @@ class Mapper(object):
         If no mapping is provided, the default one will be used.
 
         Args:
-            obj (object): object to dump
+            obj (object|list): object to dump
 
         Returns:
             dict
         """
+        if isinstance(obj, (list, set, tuple)):
+            return [self.dump(item, mapping) for item in obj]
+
         if not mapping:
             mapping = self._mappings[type(obj)][0]
 

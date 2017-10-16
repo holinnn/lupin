@@ -34,7 +34,7 @@ class Constant(Field):
         """
         return self._value
 
-    def get_value(self, obj, key=None):
+    def extract_value(self, obj, key=None):
         """Returns fixed value
 
         Args:

@@ -40,6 +40,10 @@ class TestDump(object):
         data = mapper.dump(thief)
         assert data == thief_data
 
+    def test_dumps_list_of_objects(self, mapper, thief, thief_data):
+        data = mapper.dump([thief])
+        assert data == [thief_data]
+
 
 class TestLoad(object):
     @pytest.fixture
@@ -50,3 +54,7 @@ class TestLoad(object):
         thief = mapper.load(thief_data, mapping)
         assert isinstance(thief, Thief)
 
+    def test_loads_list(self, mapper, thief_data, mapping):
+        thieves = mapper.load([thief_data], mapping)
+        assert isinstance(thieves, list)
+        assert isinstance(thieves[0], Thief)
