@@ -13,12 +13,13 @@ class PolymorphicList(Field):
                             "painting": painting_mapping
                         })
     """
-    def __init__(self, on, mappings):
+    def __init__(self, on, mappings, **kwargs):
         """
         Args:
             on (str): JSON key used to get the object type
             mappings (dict): mapping used for each values used for the `on` key
         """
+        super(PolymorphicList, self).__init__(**kwargs)
         self._on = on
         self._mappings_by_json_value = mappings
         self._mappings_by_type = {mapping.cls: mapping for mapping in mappings.values()}
