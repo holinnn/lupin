@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from . import Mapping, bind
+from .errors import MissingMapping
 
 
 class Mapper(object):
@@ -55,6 +56,9 @@ class Mapper(object):
             return [self.dump(item, mapping) for item in obj]
 
         if not mapping:
+            object_type = type(obj)
+            if object_type not in self._mappings:
+                raise MissingMapping(object_type)
             mapping = self._mappings[type(obj)][0]
 
         return mapping.dump(obj)

@@ -1,7 +1,7 @@
 # coding: utf-8
 import pytest
 
-from lupin import Schema, String, Field, Constant
+from lupin import Schema, String, Field, Constant, Int
 
 from ..fixtures import Thief, Painting, Jewel
 
@@ -26,7 +26,7 @@ def painting_schema():
 @pytest.fixture
 def jewel_schema():
     return Schema({
-        "carat": Field(),
+        "carat": Int(),
         "name": String(),
         "type": Constant("jewel")
     })

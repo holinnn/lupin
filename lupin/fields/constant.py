@@ -1,4 +1,5 @@
 from . import Field
+from ..validators import Equal
 
 
 class Constant(Field):
@@ -9,6 +10,7 @@ class Constant(Field):
         Args:
             value (object): fixed value
         """
+        kwargs.setdefault("validators", []).append(Equal(value))
         super(Constant, self).__init__(**kwargs)
         self._value = value
 

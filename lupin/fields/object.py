@@ -36,3 +36,13 @@ class Object(Field):
             dict
         """
         return self._mapping.dump(value)
+
+    def validate(self, value, path):
+        """Validate value against mapping validators.
+
+        Args:
+            value (list): value to validate
+            path (list): JSON path of value
+        """
+        super(Object, self).validate(value, path)
+        self._mapping.validate(value, path)

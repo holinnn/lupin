@@ -1,4 +1,5 @@
 from . import bind
+from .errors import ValidationError, InvalidDocument
 
 
 class Schema(object):
@@ -30,8 +31,7 @@ class Schema(object):
         """
         values = {}
         for key, field in self._fields.items():
-            raw_value = data.get(key)
-            field.inject_value(raw_value, values, key)
+            field.inject_attr(data, key, values)
 
         return factory(cls, values)
 
@@ -47,3 +47,24 @@ class Schema(object):
         return {key: field.extract_value(obj, key)
                 for key, field
                 in self._fields.items()}
+
+    def validate(self, data, path=None):
+        """Validate data with all field validators.
+        If path is provided it will be used as the base path for errors.
+
+        Args:
+            data (dict): data to validate
+            path (list): base path for errors
+        """
+        path = path or []
+        errors = []
+        for key, field in self._fields.items():
+            raw_value = data.get(key)
+            field_path = path + [key]
+            try:
+                field.validate(raw_value, field_path)
+            except ValidationError as error:
+                errors.append(error)
+
+        if errors:
+            raise InvalidDocument(errors)

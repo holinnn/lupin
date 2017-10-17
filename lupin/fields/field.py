@@ -1,12 +1,16 @@
 class Field(object):
     """Generic field that does not convert the values"""
 
-    def __init__(self, binding=None):
+    def __init__(self, binding=None, default=None, validators=None):
         """
         Args:
             binding (str): attribute name to map on object
+            default (object): default value if data is absent
+            validators (list): list of validators
         """
         self.binding = binding
+        self._validators = validators or []
+        self._default = default
 
     def load(self, value):
         """Loads python object from JSON value
@@ -46,15 +50,29 @@ class Field(object):
         raw_value = getattr(obj, key)
         return self.dump(raw_value)
 
-    def inject_value(self, value, destination, key=None):
-        """Load and add value to `destination` dict.
-        If field has been provided a `binding` then it will
-        override `key`.
+    def inject_attr(self, data, key, attributes):
+        """Load value from `data` at `key` and inject it in the attributes dictionary.
+        If field has been provided a `binding` then it will override `key`.
 
         Args:
-            value (object): a value to load
-            destination (dict): dictionary to fill with key, value
+            data (dict): JSON data
             key (str): an attribute name
+            destination (dict): dictionary to fill with key, value
         """
-        key = self.binding or key
-        destination[key] = self.load(value)
+        if key in data:
+            value = self.load(data[key])
+        else:
+            value = self._default
+
+        attr_name = self.binding or key
+        attributes[attr_name] = value
+
+    def validate(self, value, path):
+        """Validate value againt field validators
+
+        Args:
+            value (object): value to validate
+            path (list): JSON path of value
+        """
+        for validator in self._validators:
+            validator(value, path)

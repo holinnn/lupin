@@ -1,6 +1,7 @@
 import pytest
 
 from lupin import Mapper, Object
+from lupin.errors import InvalidDocument
 from tests.fixtures import Thief
 
 
@@ -25,3 +26,13 @@ class TestDump(object):
     def test_returns_thief_data(self, field, thief, thief_data):
         data = field.dump(thief)
         assert data == thief_data
+
+
+class TestValidate(object):
+    def test_does_nothing_if_valid(self, field, thief_data):
+        field.validate(thief_data, [])
+
+    def test_raises_error_if_invalid_data(self, field, thief_data):
+        thief_data["firstName"] = 46
+        with pytest.raises(InvalidDocument):
+            field.validate(thief_data, [])

@@ -36,3 +36,13 @@ class Mapping(object):
             dict
         """
         return self._schema.dump(obj)
+
+    def validate(self, data, path=None):
+        """Validate data with the schema.
+        If path is provided it will be used as the base path for errors.
+
+        Args:
+            data (dict): data to validate
+            path (list): base path for errors
+        """
+        self._schema.validate(data, path)
