@@ -1,7 +1,12 @@
 from .field import Field  # NOQA
-from .datetime_field import Datetime  # NOQA
+from .datetime_field import DateTime  # NOQA
+from .date import Date  # NOQA
 from .string import String  # NOQA
 from .object import Object  # NOQA
 from .list import List  # NOQA
 from .polymorphic_list import PolymorphicList  # NOQA
 from .constant import Constant  # NOQA
+from .int import Int  # NOQA
+from .float import Float  # NOQA
+from .number import Number  # NOQA
+from .bool import Bool  # NOQA

@@ -49,7 +49,7 @@ mapper = Mapper()
 # 3) register a schema for each of your models you want to map to JSON objects
 artist_mapping = mapper.register(Artist, Schema({
     "name": f.String(),
-    "birthDate": f.Datetime(binding="birth_date", format="%Y-%m-%d")
+    "birthDate": f.DateTime(binding="birth_date", format="%Y-%m-%d")
 }))
 
 painting_mapping = mapper.register(Painting, Schema({

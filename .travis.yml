@@ -16,3 +16,8 @@ install:
   - pip install -e .
 script:
   - pytest -q
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always

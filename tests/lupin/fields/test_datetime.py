@@ -5,7 +5,7 @@ import pytest
 
 @pytest.fixture
 def field():
-    return fields.Datetime()
+    return fields.DateTime()
 
 
 @pytest.fixture
@@ -19,5 +19,5 @@ class TestDump(object):
 
 
 class TestLoad(object):
-    def test_returns_the_same_value(self, field, time):
+    def test_returns_a_datetime(self, field, time):
         assert field.load("2017-10-07T17:35:00") == time

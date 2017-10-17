@@ -4,34 +4,34 @@ from . import Field
 from ..validators import Type
 
 
-class DateTime(Field):
-    """Field used to handle datetime values"""
+class Date(Field):
+    """Field used to handle date values"""
 
-    def __init__(self, format="%Y-%m-%dT%H:%M:%S", *args, **kwargs):
+    def __init__(self, format="%Y-%m-%d", **kwargs):
         """
         Args:
             format (str): datetime format to use
         """
         kwargs.setdefault("validators", []).append(Type(str))
-        super(DateTime, self).__init__(*args, **kwargs)
+        super(Date, self).__init__(**kwargs)
         self._format = format
 
     def load(self, value):
-        """Loads a datetime python object from a JSON string
+        """Loads a date python object from a JSON string
 
         Args:
             value (str): a value
 
         Returns:
-            datetime
+            date
         """
-        return datetime.strptime(value, self._format)
+        return datetime.strptime(value, self._format).date()
 
     def dump(self, value):
-        """Dump a datetime to string representation
+        """Dump a date to string representation
 
         Args:
-            value (datetime): a datetime
+            value (date): a date
 
         Returns:
             str

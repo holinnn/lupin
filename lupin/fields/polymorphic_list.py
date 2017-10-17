@@ -1,4 +1,6 @@
 from . import Field
+from ..validators import Type
+from ..errors import MissingPolymorphicKey
 
 
 class PolymorphicList(Field):
@@ -19,6 +21,7 @@ class PolymorphicList(Field):
             on (str): JSON key used to get the object type
             mappings (dict): mapping used for each values used for the `on` key
         """
+        kwargs.setdefault("validators", []).append(Type(list))
         super(PolymorphicList, self).__init__(**kwargs)
         self._on = on
         self._mappings_by_json_value = mappings
@@ -49,3 +52,18 @@ class PolymorphicList(Field):
         return [self._mappings_by_type[type(item)].dump(item)
                 for item
                 in value]
+
+    def validate(self, value, path):
+        """Validate each items of list against nested mapping.
+
+        Args:
+            value (list): value to validate
+            path (list): JSON path of value
+        """
+        super(PolymorphicList, self).validate(value, path)
+        for item_index, item in enumerate(value):
+            item_path = path + [str(item_index)]
+            if self._on not in item:
+                raise MissingPolymorphicKey(self._on, path)
+            mapping = self._mappings_by_json_value[item[self._on]]
+            mapping.validate(item, item_path)

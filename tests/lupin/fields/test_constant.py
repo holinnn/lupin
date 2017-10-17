@@ -1,6 +1,7 @@
 import pytest
 
-from lupin import Constant
+from lupin.fields import Constant
+from lupin.errors import NotEqual
 
 
 @pytest.fixture
@@ -21,3 +22,12 @@ class TestDump(object):
 class TestExtractValue(object):
     def test_returns_fixed_value(self, field):
         assert field.extract_value(None) == 46
+
+
+class TestValidate(object):
+    def test_raises_error_if_not_constant_value(self, field):
+        with pytest.raises(NotEqual):
+            field.validate("arsene", [])
+
+    def test_does_nothing_if_constant_value(self, field):
+        field.validate(46, [])

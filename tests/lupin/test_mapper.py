@@ -2,6 +2,7 @@
 import pytest
 
 from lupin import Mapper, Mapping, Schema, String
+from lupin.errors import MissingMapping
 from tests.fixtures import Thief
 
 
@@ -43,6 +44,10 @@ class TestDump(object):
     def test_dumps_list_of_objects(self, mapper, thief, thief_data):
         data = mapper.dump([thief])
         assert data == [thief_data]
+
+    def test_raises_exception_if_no_mapping(self, mapper):
+        with pytest.raises(MissingMapping):
+            mapper.dump(46)
 
 
 class TestLoad(object):
