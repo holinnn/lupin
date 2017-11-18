@@ -7,10 +7,15 @@ from .errors import MissingMapping
 class Mapper(object):
     """Mapper is used to associate the schemas with their python classes"""
 
-    def __init__(self):
+    def __init__(self, default_factory=bind):
+        """
+        Args:
+            default_factory (callable): default factory used to instantiate objects
+        """
+        self._default_factory = default_factory
         self._mappings = defaultdict(list)
 
-    def register(self, cls, schema, default=False, factory=bind):
+    def register(self, cls, schema, default=False, factory=None):
         """Associate a class with a schema
 
         Args:
@@ -22,25 +27,44 @@ class Mapper(object):
         Returns:
             Mapping
         """
+        factory = factory or self._default_factory
         mapping = Mapping(cls, schema, factory)
         mapping_index = 0 if default else len(self._mappings[cls])
         self._mappings[cls].insert(mapping_index, mapping)
         return mapping
 
-    def load(self, data, mapping):
+    def load(self, data, mapping, allow_partial=False):
         """Loads an instance of klass from JSON data
 
         Args:
             data (dict|list): JSON data
-            klass (class): class to instantiate
+            mapping (Mapping): mapping used to load data
+            allow_partial (bool): allow partial schema, won't raise error if missing keys
 
         returns:
             object
         """
         if isinstance(data, (list, set, tuple)):
-            return [self.load(item, mapping) for item in data]
+            return [self.load(item, mapping, allow_partial) for item in data]
 
-        return mapping.load(data)
+        mapping.validate(data, allow_partial=allow_partial)
+        return mapping.load(data, allow_partial=allow_partial)
+
+    def load_attrs(self, data, mapping, allow_partial=False):
+        """Loads attributes dictionary from `data`
+
+        Args:
+            data (dict): dictionary of data
+            allow_partial (bool): allow partial schema, won't raise error if missing keys
+
+        Returns:
+            dict
+        """
+        if isinstance(data, (list, set, tuple)):
+            return [self.load_attrs(item, mapping, allow_partial) for item in data]
+
+        mapping.validate(data, allow_partial=allow_partial)
+        return mapping.load_attrs(data, allow_partial=allow_partial)
 
     def dump(self, obj, mapping=None):
         """Dump object into its JSON representation.

@@ -12,21 +12,22 @@ import sys
 from setuptools import setup
 
 
-def get_long_description():
-    try:
-        import pypandoc
-        return pypandoc.convert("README.md", "rst")
-    except (ImportError, OSError):
-        with open("README.md") as f:
-            return f.read()
+try:
+    import pypandoc
+    long_description = pypandoc.convert("README.md", "rst")
+    with open("README.rst", "w") as f:
+        f.write(long_description)
+except (ImportError, OSError):
+    with open("README.md") as f:
+        long_description = f.read()
 
 
 def setup_package():
-    needs_sphinx = {'build_sphinx', 'upload_docs'}.intersection(sys.argv)
-    sphinx = ['sphinx'] if needs_sphinx else []
-    setup(setup_requires=['six', 'pyscaffold>=2.5a0,<2.6a0'] + sphinx,
+    needs_sphinx = {"build_sphinx", "upload_docs"}.intersection(sys.argv)
+    sphinx = ["sphinx"] if needs_sphinx else []
+    setup(setup_requires=["six", "pyscaffold>=2.5a0,<2.6a0"] + sphinx,
           use_pyscaffold=True,
-          long_description=get_long_description())
+          long_description=long_description)
 
 
 if __name__ == "__main__":

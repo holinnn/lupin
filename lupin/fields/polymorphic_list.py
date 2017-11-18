@@ -66,4 +66,4 @@ class PolymorphicList(Field):
             if self._on not in item:
                 raise MissingPolymorphicKey(self._on, path)
             mapping = self._mappings_by_json_value[item[self._on]]
-            mapping.validate(item, item_path)
+            mapping.validate(item, path=item_path)

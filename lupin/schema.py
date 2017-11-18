@@ -1,5 +1,5 @@
 from . import bind
-from .errors import ValidationError, InvalidDocument
+from .errors import ValidationError, InvalidDocument, MissingKey
 
 
 class Schema(object):
@@ -19,21 +19,44 @@ class Schema(object):
         """
         self._fields[name] = field
 
-    def load(self, cls, data, factory=bind):
-        """Loads an instance of cls from JSON data
+    def load(self, cls, data, allow_partial=False, factory=bind):
+        """Loads an instance of cls from dictionary
 
         Args:
             cls (class): class to instantiate
-            data (dict): JSON data
+            data (dict): dictionary of data
+            allow_partial (bool): allow partial schema, won't raise error if missing keys
+            factory (callable): factory method used to instantiate objects
 
         Returns:
             object
         """
-        values = {}
-        for key, field in self._fields.items():
-            field.inject_attr(data, key, values)
+        attrs = self.load_attrs(data, allow_partial)
+        return factory(cls, attrs)
 
-        return factory(cls, values)
+    def load_attrs(self, data, allow_partial=False):
+        """Loads attributes dictionary from `data`
+
+        Args:
+            data (dict): dictionary of data
+            allow_partial (bool): allow partial schema, won't raise error if missing keys
+
+        Returns:
+            dict
+        """
+        attrs = {}
+        for key, field in self._fields.items():
+            if key in data:
+                value = field.load(data[key])
+            elif allow_partial:
+                continue
+            else:
+                value = field.default
+
+            attr_name = field.binding or key
+            attrs[attr_name] = value
+
+        return attrs
 
     def dump(self, obj):
         """Dumps object into a dictionnary
@@ -44,27 +67,31 @@ class Schema(object):
         Returns:
             dict
         """
-        return {key: field.extract_value(obj, key)
+        return {key: field.extract_attr(obj, key)
                 for key, field
                 in self._fields.items()}
 
-    def validate(self, data, path=None):
+    def validate(self, data, allow_partial=False, path=None):
         """Validate data with all field validators.
         If path is provided it will be used as the base path for errors.
 
         Args:
             data (dict): data to validate
+            allow_partial (bool): allow partial schema, won't raise error if missing keys
             path (list): base path for errors
         """
         path = path or []
         errors = []
         for key, field in self._fields.items():
-            raw_value = data.get(key)
             field_path = path + [key]
-            try:
-                field.validate(raw_value, field_path)
-            except ValidationError as error:
-                errors.append(error)
+            if key in data:
+                raw_value = data.get(key)
+                try:
+                    field.validate(raw_value, field_path)
+                except ValidationError as error:
+                    errors.append(error)
+            elif not allow_partial:
+                errors.append(MissingKey(key, field_path))
 
         if errors:
             raise InvalidDocument(errors)

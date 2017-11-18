@@ -19,9 +19,9 @@ class TestDump(object):
         assert field.dump(None) == 46
 
 
-class TestExtractValue(object):
+class TestExtractAttr(object):
     def test_returns_fixed_value(self, field):
-        assert field.extract_value(None) == 46
+        assert field.extract_attr(None) == 46
 
 
 class TestValidate(object):

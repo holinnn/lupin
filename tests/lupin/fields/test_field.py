@@ -18,23 +18,10 @@ class TestLoad(object):
         assert field.load("46") == "46"
 
 
-class TestInjectAttr(object):
-    def test_add_loaded_value_to_dict(self, field):
-        attrs = {}
-        data = {"id": "46"}
-        field.inject_attr(data, "id", attrs)
-        assert attrs == {
-            "id": "46"
-        }
-
-    def test_uses_default_if_no_value(self):
-        field = f.Field(default="46")
-        attrs = {}
-        data = {}
-        field.inject_attr(data, "id", attrs)
-        assert attrs == {
-            "id": "46"
-        }
+class TestExtractAttr(object):
+    def test_returns_attr_from_object(self, field, thief):
+        value = field.extract_attr(thief, "last_name")
+        assert value == thief.last_name
 
 
 class TestValidate(object):

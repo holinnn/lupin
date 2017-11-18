@@ -11,6 +11,11 @@ def mapper():
     return Mapper()
 
 
+@pytest.fixture(autouse=True)
+def mapping(mapper, thief_schema):
+    return mapper.register(Thief, thief_schema)
+
+
 class TestRegister(object):
     def test_returns_a_mapping(self, mapper, thief_schema):
         mapping = mapper.register(Thief, thief_schema)
@@ -29,10 +34,6 @@ class TestRegister(object):
 
 
 class TestDump(object):
-    @pytest.fixture(autouse=True)
-    def mapping(self, mapper, thief_schema):
-        return mapper.register(Thief, thief_schema)
-
     def test_returns_thief_data(self, thief, mapper, thief_data, mapping):
         data = mapper.dump(thief, mapping)
         assert data == thief_data
@@ -51,10 +52,6 @@ class TestDump(object):
 
 
 class TestLoad(object):
-    @pytest.fixture
-    def mapping(self, mapper, thief_schema):
-        return mapper.register(Thief, thief_schema)
-
     def test_returns_a_thief(self, mapper, thief_data, mapping):
         thief = mapper.load(thief_data, mapping)
         assert isinstance(thief, Thief)
@@ -63,3 +60,17 @@ class TestLoad(object):
         thieves = mapper.load([thief_data], mapping)
         assert isinstance(thieves, list)
         assert isinstance(thieves[0], Thief)
+
+
+class TestLoadAttrs(object):
+    def test_returns_a_dict(self, mapper, thief_data, mapping):
+        attrs = mapper.load_attrs(thief_data, mapping)
+        assert attrs == {
+            "first_name": "Arsène",
+            "last_name": "Lupin"
+        }
+
+    def test_loads_list(self, mapper, thief_data, mapping):
+        thieves = mapper.load_attrs([thief_data], mapping)
+        assert isinstance(thieves, list)
+        assert isinstance(thieves[0], dict)

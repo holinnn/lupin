@@ -163,3 +163,17 @@ class MissingPolymorphicKey(ValidationError):
         message = "Polymorphic document does not contain the \"%s\" key " % key
         super(MissingPolymorphicKey, self).__init__(message, path)
         self.key = key
+
+
+class MissingKey(ValidationError):
+    """Error raised when a key is missing from data"""
+
+    def __init__(self, key, path):
+        """
+        Args:
+            key (str): missing key
+            path (list): path of the missing data
+        """
+        message = "Document do not containe the \"%s\" key" % key
+        super(MissingKey, self).__init__(message, path)
+        self.key = key

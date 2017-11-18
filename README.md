@@ -190,3 +190,43 @@ thief = mapper.load(data, thief_mapping)
 assert isinstance(thief.stolen_items[0], Painting)
 assert isinstance(thief.stolen_items[1], Diamond)
 ```
+
+### Validation
+
+Lupin provides a set of builtin validators, you can find them in the [lupin/validators](https://github.com/holinnn/lupin/tree/develop/lupin/validators) folder.
+
+While creating your schemas you can assign validators to the fields. Before loading a document lupin will validate
+its format. If one field is invalid, an `InvalidDocument` is raised with all the error detected in the data.
+
+Example :
+
+```python
+from lupin import Mapper, Schema, fields as f, validators as v
+from lupin.errors import InvalidDocument, InvalidLength
+from models import Artist
+
+mapper = Mapper()
+
+mapping = mapper.register(Artist, Schema({
+    "name": f.String(validators=[v.Length(max=10)]),
+}))
+
+data = {
+    "name": "Leonardo da Vinci"
+}
+
+try:
+    mapper.load(data, mapping, allow_partial=True)
+except InvalidDocument as errors:
+    error = errors[0]
+    assert isinstance(error, InvalidLength)
+    assert error.path == ["name"]
+```
+
+Current validators are :
+- `DateTimeFormat` (validate that value is a valid datetime format)
+- `Equal` (validate that value is equal to a predefined one)
+- `In` (validate that a value is contained in a set of value)
+- `Length` (validate the length of a value)
+- `Match` (validate the format of a value with a regex)
+- `Type` (validate the type of a value, this validator is already included in all fields to match the field type)
