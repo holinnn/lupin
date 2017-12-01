@@ -46,6 +46,8 @@ class Schema(object):
         """
         attrs = {}
         for key, field in self._fields.items():
+            if field.is_read_only:
+                continue
             if key in data:
                 value = field.load(data[key])
             elif allow_partial:

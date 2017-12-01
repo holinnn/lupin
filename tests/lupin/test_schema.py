@@ -1,7 +1,7 @@
 # coding: utf-8
 import pytest
 
-from lupin import Constant
+from lupin import Constant, fields as f
 from lupin.errors import InvalidDocument, InvalidType, MissingKey
 from tests.fixtures import Thief
 
@@ -35,6 +35,13 @@ class TestLoadAttrs(object):
         attrs = thief_schema.load_attrs(thief_data, allow_partial=True)
         assert attrs == {
             "last_name": "Lupin"
+        }
+
+    def test_do_not_load_read_only_attribute(self, thief_schema, thief_data):
+        thief_schema.add_field("lastName", f.String(read_only=True))
+        attrs = thief_schema.load_attrs(thief_data, allow_partial=True)
+        assert attrs == {
+            "first_name": "Arsène"
         }
 
 
