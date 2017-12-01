@@ -1,7 +1,8 @@
 import pytest
 
 from lupin import Mapper, fields as f
-from lupin.errors import InvalidType, InvalidDocument, MissingPolymorphicKey
+from lupin.errors import InvalidType, InvalidDocument, MissingPolymorphicKey,\
+    InvalidPolymorphicType
 
 from tests.fixtures import Jewel, Painting
 
@@ -55,6 +56,11 @@ class TestValidate(object):
     def test_raises_exception_if_no_polymorphic_key(self, field, diamond_data):
         del diamond_data["type"]
         with pytest.raises(MissingPolymorphicKey):
+            field.validate(diamond_data, [])
+
+    def test_raises_exception_if_invalid_polymorphic_type(self, field, diamond_data):
+        diamond_data["type"] = "car"
+        with pytest.raises(InvalidPolymorphicType) as err:
             field.validate(diamond_data, [])
 
     def test_does_nothing_if_all_items_are_valid(self, field, diamond_data):

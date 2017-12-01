@@ -165,6 +165,23 @@ class MissingPolymorphicKey(ValidationError):
         self.key = key
 
 
+class InvalidPolymorphicType(ValidationError):
+    """Error raised by a polymorphic field when it does not have a
+    mapping for the data it tries to validate
+    """
+    def __init__(self, invalid_type, supported_types, path):
+        """
+        Args:
+            invalid_type (str): invalid type received
+            supported_types (list): valid types supported
+            path (list): path of the invalid data
+        """
+        message = "Invalid polymorphic document  \"%s\" is not supported only \"%s\" " % (invalid_type, supported_types)
+        super(InvalidPolymorphicType, self).__init__(message, path)
+        self.invalid_type = invalid_type
+        self.supported_types = supported_types
+
+
 class MissingKey(ValidationError):
     """Error raised when a key is missing from data"""
 

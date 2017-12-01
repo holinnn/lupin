@@ -1,6 +1,6 @@
 from . import Field
 from ..validators import Type
-from ..errors import MissingPolymorphicKey
+from ..errors import MissingPolymorphicKey, InvalidPolymorphicType
 
 
 class PolymorphicObject(Field):
@@ -57,5 +57,12 @@ class PolymorphicObject(Field):
         super(PolymorphicObject, self).validate(value, path)
         if self._on not in value:
             raise MissingPolymorphicKey(self._on, path)
+
+        obj_type = value[self._on]
+        if obj_type not in self._mappings_by_json_value:
+            raise InvalidPolymorphicType(invalid_type=obj_type,
+                                         supported_types=list(self._mappings_by_json_value.keys()),
+                                         path=path+[self._on])
+
         mapping = self._mappings_by_json_value[value[self._on]]
         mapping.validate(value, path=path)
