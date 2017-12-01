@@ -92,7 +92,7 @@ class Schema(object):
                     field.validate(raw_value, field_path)
                 except ValidationError as error:
                     errors.append(error)
-            elif not allow_partial:
+            elif not allow_partial and not field.is_optional:
                 errors.append(MissingKey(key, field_path))
 
         if errors:

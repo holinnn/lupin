@@ -1,4 +1,5 @@
 from . import Field
+from ..validators import Type
 
 
 class Object(Field):
@@ -12,6 +13,7 @@ class Object(Field):
         Args:
             mapping (Mapping): mapping of nested object
         """
+        kwargs.setdefault("validators", []).append(Type(dict))
         super(Object, self).__init__(*args, **kwargs)
         self._mapping = mapping
 

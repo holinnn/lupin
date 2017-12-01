@@ -4,6 +4,7 @@ from .date import Date  # NOQA
 from .string import String  # NOQA
 from .object import Object  # NOQA
 from .list import List  # NOQA
+from .polymorphic_object import PolymorphicObject  # NOQA
 from .polymorphic_list import PolymorphicList  # NOQA
 from .constant import Constant  # NOQA
 from .int import Int  # NOQA

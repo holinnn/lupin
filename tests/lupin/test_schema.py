@@ -88,3 +88,8 @@ class TestValidate(object):
     def test_do_not_raise_exception_if_allow_partial_and_missing_key(self, thief_schema, thief_data):
         del thief_data["firstName"]
         thief_schema.validate(thief_data, allow_partial=True)
+
+    def test_do_not_raise_exception_if_optional_field(self, thief_schema, thief_data):
+        thief_schema.add_field("age", f.String(optional=True))
+        assert "age" not in thief_data
+        thief_schema.validate(thief_data)

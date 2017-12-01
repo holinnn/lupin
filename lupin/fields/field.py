@@ -1,18 +1,21 @@
 class Field(object):
     """Generic field that does not convert the values"""
 
-    def __init__(self, binding=None, default=None, validators=None, read_only=False):
+    def __init__(self, binding=None, default=None, validators=None, read_only=False,
+                 optional=False):
         """
         Args:
             binding (str): attribute name to map on object
             default (object): default value if data is absent
             validators (list): list of validators
             read_only (bool): if True the field will only be used to serialize data
+            optional (bool): if True it won't raise an error if no value provided for this field
         """
         self.binding = binding
         self.default = default
         self._validators = validators or []
         self.is_read_only = read_only
+        self.is_optional = optional
 
     def load(self, value):
         """Loads python object from JSON value
