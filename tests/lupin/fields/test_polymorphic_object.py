@@ -2,7 +2,7 @@ import pytest
 
 from lupin import Mapper, fields as f
 from lupin.errors import InvalidType, InvalidDocument, MissingPolymorphicKey,\
-    InvalidPolymorphicType
+    InvalidPolymorphicType, MissingMapping
 
 from tests.fixtures import Jewel, Painting
 

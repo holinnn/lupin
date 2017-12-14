@@ -1,6 +1,7 @@
 from . import Field
 from ..validators import Type
 from ..errors import MissingPolymorphicKey, InvalidPolymorphicType
+from ..utils import get_mapping
 
 
 class PolymorphicObject(Field):
@@ -45,7 +46,8 @@ class PolymorphicObject(Field):
         Returns:
             dict
         """
-        return self._mappings_by_type[type(value)].dump(value)
+        mapping = get_mapping(self._mappings_by_type, value)
+        return mapping.dump(value)
 
     def validate(self, value, path):
         """Validate each items of list against nested mapping.

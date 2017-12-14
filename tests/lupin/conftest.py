@@ -1,7 +1,7 @@
 # coding: utf-8
 import pytest
 
-from lupin import Schema, String, Field, Constant, Int
+from lupin import Schema, String, Constant, Int, Mapping
 
 from ..fixtures import Thief, Painting, Jewel
 
@@ -50,6 +50,16 @@ def thief():
 def mona_lisa():
     return Painting(name="Mona Lisa",
                     author="Leonardo da Vinci")
+
+
+@pytest.fixture
+def painting_mapping(painting_schema):
+    return Mapping(Painting, painting_schema)
+
+
+@pytest.fixture
+def jewel_mapping(jewel_schema):
+    return Mapping(Jewel, jewel_schema)
 
 
 @pytest.fixture

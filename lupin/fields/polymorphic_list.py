@@ -1,6 +1,7 @@
 from . import Field
 from ..validators import Type
 from ..errors import MissingPolymorphicKey, InvalidPolymorphicType
+from ..utils import get_mapping
 
 
 class PolymorphicList(Field):
@@ -49,7 +50,7 @@ class PolymorphicList(Field):
         Returns:
             list
         """
-        return [self._mappings_by_type[type(item)].dump(item)
+        return [get_mapping(self._mappings_by_type, item).dump(item)
                 for item
                 in value]
 
@@ -69,8 +70,8 @@ class PolymorphicList(Field):
             obj_type = item[self._on]
             if obj_type not in self._mappings_by_json_value:
                 raise InvalidPolymorphicType(invalid_type=obj_type,
-                                            supported_types=list(self._mappings_by_json_value.keys()),
-                                            path=path+[self._on])
+                                             supported_types=list(self._mappings_by_json_value.keys()),
+                                             path=path+[self._on])
 
             mapping = self._mappings_by_json_value[obj_type]
             mapping.validate(item, path=item_path)
