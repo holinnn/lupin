@@ -11,3 +11,4 @@ from .int import Int  # NOQA
 from .float import Float  # NOQA
 from .number import Number  # NOQA
 from .bool import Bool  # NOQA
+from .dict import Dict  # NOQA
