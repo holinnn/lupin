@@ -153,6 +153,20 @@ class InvalidRange(ValidationError):
         self.value = value
 
 
+class InvalidURL(ValidationError):
+    """Error raised by `URL` validator"""
+
+    def __init__(self, invalid, path):
+        """
+        Args:
+            invalid (str): invalid URL
+            path (list): path of the invalid data
+        """
+        message = "Invalid URL : %s" % (invalid)
+        super(InvalidURL, self).__init__(message, path)
+        self.invalid = invalid
+
+
 class InvalidDateTimeFormat(ValidationError):
     """Error raised by `DateTimeFormat` validator"""
 
