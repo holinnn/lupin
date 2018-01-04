@@ -135,6 +135,24 @@ class InvalidLength(ValidationError):
         self.length = length
 
 
+class InvalidRange(ValidationError):
+    """Error raised by `Between` validator"""
+
+    def __init__(self, value, min, max, path):
+        """
+        Args:
+            value (int): value received
+            min (int): minimum value
+            max (int): maximum value
+            path (list): path of the invalid data
+        """
+        message = "%s is not between %s and %s" % (value, min, max)
+        super(InvalidRange, self).__init__(message, path)
+        self.max = max
+        self.min = min
+        self.value = value
+
+
 class InvalidDateTimeFormat(ValidationError):
     """Error raised by `DateTimeFormat` validator"""
 
