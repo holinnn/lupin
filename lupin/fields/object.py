@@ -26,6 +26,8 @@ class Object(Field):
         Returns:
             object
         """
+        if value is None:
+            return None
         return self._mapping.load(value)
 
     def dump(self, value):
@@ -37,6 +39,8 @@ class Object(Field):
         Returns:
             dict
         """
+        if value is None:
+            return value
         return self._mapping.dump(value)
 
     def validate(self, value, path):

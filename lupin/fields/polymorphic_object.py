@@ -35,6 +35,8 @@ class PolymorphicObject(Field):
         Returns:
             object
         """
+        if value is None:
+            return None
         return self._mappings_by_json_value[value[self._on]].load(value)
 
     def dump(self, value):

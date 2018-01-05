@@ -28,6 +28,9 @@ class TestLoad(object):
         painting = field.load(mona_lisa_data)
         assert isinstance(painting, Painting)
 
+    def test_returs_none_if_none_value(self, field):
+        assert field.load(None) is None
+
 
 class TestDump(object):
     def test_dumps_a_painting(self, field, mona_lisa, mona_lisa_data):

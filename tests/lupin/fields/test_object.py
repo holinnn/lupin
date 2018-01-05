@@ -21,11 +21,17 @@ class TestLoad(object):
         thief = field.load(thief_data)
         assert isinstance(thief, Thief)
 
+    def test_returns_none_if_none_value(self, field):
+        assert field.load(None) is None
+
 
 class TestDump(object):
     def test_returns_thief_data(self, field, thief, thief_data):
         data = field.dump(thief)
         assert data == thief_data
+
+    def test_returns_none_if_value_is_null(self, field):
+        assert field.dump(None) is None
 
 
 class TestValidate(object):
