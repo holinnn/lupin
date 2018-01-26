@@ -32,6 +32,13 @@ class TestRegister(object):
             "firstName": "Arsène"
         }
 
+    def test_handles_multiple_classes(self, mapper, thief_schema, thief_data):
+        OtherThiefClass = type("OtherThiefClass", (Thief,), {})
+        mapper.register((Thief, OtherThiefClass), thief_schema)
+        thief = OtherThiefClass("Arsène", "Lupin")
+        data = mapper.dump(thief)
+        assert data == thief_data
+
 
 class TestDump(object):
     def test_returns_thief_data(self, thief, mapper, thief_data, mapping):

@@ -34,3 +34,11 @@ class TestValidate(object):
 
     def test_does_nothing_if_valid(self, mapping, thief_data):
         mapping.validate(thief_data)
+
+
+class TestCanHandle(object):
+    def test_returns_false_if_wrong_class(self, mapping, diamond):
+        assert not mapping.can_handle(diamond)
+
+    def test_returns_true_if_right_class(self, mapping, thief):
+        assert mapping.can_handle(thief)

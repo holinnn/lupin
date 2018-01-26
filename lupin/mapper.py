@@ -18,8 +18,11 @@ class Mapper(object):
     def register(self, cls, schema, default=False, factory=None):
         """Associate a class with a schema
 
+        If cls is a tuple then it registers all classes for the same schema.
+        But the resulting mapping will instantiate the first class from the tuple on .load()
+
         Args:
-            cls (class): a python class
+            cls (class): a python class or a tuple of class to register multiple classes with the same schema
             schema (Schema): schema that will be used to dump & load objects of klass
             default (bool): if True, this schema will be the default one for dumping instances of `cls`
             factory (callable): factory method used to instantiate objects when loading from JSON
@@ -27,10 +30,13 @@ class Mapper(object):
         Returns:
             Mapping
         """
+        if not isinstance(cls, tuple):
+            cls = (cls,)
         factory = factory or self._default_factory
         mapping = Mapping(cls, schema, factory)
-        mapping_index = 0 if default else len(self._mappings[cls])
-        self._mappings[cls].insert(mapping_index, mapping)
+        for klass in cls:
+            mapping_index = 0 if default else len(self._mappings[klass])
+            self._mappings[klass].insert(mapping_index, mapping)
         return mapping
 
     def load(self, data, mapping, allow_partial=False):

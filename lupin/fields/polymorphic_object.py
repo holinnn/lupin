@@ -24,7 +24,9 @@ class PolymorphicObject(Field):
         super(PolymorphicObject, self).__init__(**kwargs)
         self._on = on
         self._mappings_by_json_value = mappings
-        self._mappings_by_type = {mapping.cls: mapping for mapping in mappings.values()}
+        self._mappings_by_type = {cls: mapping
+                                  for mapping in mappings.values()
+                                  for cls in mapping.classes}
 
     def load(self, value):
         """Loads python objects from JSON object

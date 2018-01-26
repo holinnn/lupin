@@ -19,7 +19,7 @@ def get_mapping(mappings, obj):
     else:
         mapping_objects = list(mappings.values())
         for mapping in mapping_objects:
-            if isinstance(obj, mapping.cls):
+            if mapping.can_handle(obj):
                 mappings[type(obj)] = mapping
                 return mapping
 
