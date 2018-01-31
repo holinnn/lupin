@@ -223,6 +223,6 @@ class MissingKey(ValidationError):
             key (str): missing key
             path (list): path of the missing data
         """
-        message = "Document do not containe the \"%s\" key" % key
+        message = "Document does not contain the \"%s\" key" % key
         super(MissingKey, self).__init__(message, path)
         self.key = key
