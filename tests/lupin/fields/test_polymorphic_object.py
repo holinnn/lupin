@@ -41,6 +41,9 @@ class TestDump(object):
         result = field.dump(diamond)
         assert result == diamond_data
 
+    def test_returns_none_if_value_is_null(self, field):
+        assert field.dump(None) is None
+
 
 class TestValidate(object):
     def test_raise_exception_if_not_dict(self, field):

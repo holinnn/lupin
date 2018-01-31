@@ -52,6 +52,8 @@ class PolymorphicList(Field):
         Returns:
             list
         """
+        if value is None:
+            return value
         return [get_mapping(self._mappings_by_type, item).dump(item)
                 for item
                 in value]

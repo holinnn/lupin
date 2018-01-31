@@ -50,6 +50,8 @@ class PolymorphicObject(Field):
         Returns:
             dict
         """
+        if value is None:
+            return value
         mapping = get_mapping(self._mappings_by_type, value)
         return mapping.dump(value)
 

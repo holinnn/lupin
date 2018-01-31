@@ -33,6 +33,9 @@ class TestDump(object):
         result = field.dump(stolen_items)
         assert result == stolen_items_data
 
+    def test_returns_none_if_value_is_null(self, field):
+        assert field.dump(None) is None
+
 
 class TestValidate(object):
     def test_raise_exception_if_not_list(self, field):
