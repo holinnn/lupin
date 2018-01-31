@@ -51,4 +51,4 @@ class Object(Field):
             path (list): JSON path of value
         """
         super(Object, self).validate(value, path)
-        self._mapping.validate(value, path)
+        self._mapping.validate(value, path=path)
