@@ -8,47 +8,52 @@ class Object(Field):
     used for the JSON representation.
     """
 
-    def __init__(self, mapping, *args, **kwargs):
+    def __init__(self, schema, *args, **kwargs):
         """
         Args:
-            mapping (Mapping): mapping of nested object
+            schema (Schema): schema of nested object
         """
         kwargs.setdefault("validators", []).append(Type(dict))
         super(Object, self).__init__(*args, **kwargs)
-        self._mapping = mapping
+        self._schema = schema
 
-    def load(self, value):
+    def load(self, value, mapper):
         """Loads python object from JSON object
 
         Args:
             value (dict): nested JSON object
+            mapper (Mapper): mapper used to load data
 
         Returns:
             object
         """
         if value is None:
             return None
-        return self._mapping.load(value)
 
-    def dump(self, value):
+        return mapper.load(value, self._schema)
+
+    def dump(self, value, mapper):
         """Dump object into its JSON representation
 
         Args:
             value (object): an object
+            mapper (Mapper): mapper used to dump data
 
         Returns:
             dict
         """
         if value is None:
             return value
-        return self._mapping.dump(value)
 
-    def validate(self, value, path):
+        return self._schema.dump(value, mapper)
+
+    def validate(self, value, path, mapper):
         """Validate value against mapping validators.
 
         Args:
             value (list): value to validate
             path (list): JSON path of value
+            mapper (Mapper): mapper used to dump data
         """
-        super(Object, self).validate(value, path)
-        self._mapping.validate(value, path=path)
+        super(Object, self).validate(value, path, mapper)
+        self._schema.validate(value, mapper, path)

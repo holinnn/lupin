@@ -1,3 +1,11 @@
+class SchemaAlreadyRegistered(Exception):
+    """Error raised while trying to register a Schema that has already
+    been registered
+    """
+    def __init__(self):
+        super(SchemaAlreadyRegistered, self).__init__("Schema has already been registered in mapper")
+
+
 class MissingMapping(Exception):
     """Error raised when no mapper has been defined for a class
     while dumping an instance of that class.

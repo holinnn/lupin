@@ -2,6 +2,12 @@ import pytest
 
 from lupin.fields import Constant
 from lupin.errors import NotEqual
+from lupin import Mapper
+
+
+@pytest.fixture
+def mapper():
+    return Mapper()
 
 
 @pytest.fixture
@@ -10,24 +16,24 @@ def field():
 
 
 class TestLoad(object):
-    def test_returns_fixed_value(self, field):
-        assert field.load(None) == 46
+    def test_returns_fixed_value(self, field, mapper):
+        assert field.load(None, mapper) == 46
 
 
 class TestDump(object):
-    def test_returns_fixed_value(self, field):
-        assert field.dump(None) == 46
+    def test_returns_fixed_value(self, field, mapper):
+        assert field.dump(None, mapper) == 46
 
 
 class TestExtractAttr(object):
-    def test_returns_fixed_value(self, field):
-        assert field.extract_attr(None) == 46
+    def test_returns_fixed_value(self, field, mapper):
+        assert field.extract_attr(None, mapper) == 46
 
 
 class TestValidate(object):
-    def test_raises_error_if_not_constant_value(self, field):
+    def test_raises_error_if_not_constant_value(self, field, mapper):
         with pytest.raises(NotEqual):
-            field.validate("arsene", [])
+            field.validate("arsene", [], mapper)
 
-    def test_does_nothing_if_constant_value(self, field):
-        field.validate(46, [])
+    def test_does_nothing_if_constant_value(self, field, mapper):
+        field.validate(46, [], mapper)

@@ -43,27 +43,31 @@ class Artist(object):
         self.birth_date = birth_date
 
 
-# 2) create a mapper
-mapper = Mapper()
-
-# 3) register a schema for each of your models you want to map to JSON objects
-artist_mapping = mapper.register(Artist, Schema({
+# 2) Create schemas
+artist_schema = Schema({
     "name": f.String(),
     "birthDate": f.DateTime(binding="birth_date", format="%Y-%m-%d")
-}))
+})
 
-painting_mapping = mapper.register(Painting, Schema({
+painting_schema = Schema({
     "name": f.String(),
-    "author": f.Object(artist_mapping)
-}))
+    "author": f.Object(artist_schema)
+})
 
-mapper.register(Thief, Schema({
+thief_schema = Schema({
     "name": f.String(),
-    "stolenItems": f.List(painting_mapping, binding="stolen_items")
-}))
+    "stolenItems": f.List(painting_schema, binding="stolen_items")
+})
+
+# 3) Create a mapper and register a schema for each of your models you want to map to JSON objects
+mapper = Mapper()
+
+mapper.register(Artist, artist_schema)
+mapper.register(Painting, painting_schema)
+mapper.register(Thief, thief_schema)
 
 
-# 4) create some sample data
+# 4) Create some sample data
 leonardo = Artist(name="Leonardo da Vinci", birth_date=datetime(1452, 4, 15))
 mona_lisa = Painting(name="Mona Lisa", author=leonardo)
 arsene = Thief(name="Arsène Lupin", stolen_items=[mona_lisa])
@@ -111,7 +115,7 @@ data = {
         "birthDate": "1452-04-15"
     }
 }
-painting = mapper.load(data, painting_mapping)
+painting = mapper.load(data, painting_schema)
 artist = painting.author
 
 assert isinstance(painting, Painting)
@@ -138,28 +142,31 @@ class Diamond(object):
 mapper = Mapper()
 
 # Register a schema for diamonds
-diamond_mapping = mapper.register(Diamond, Schema({
+diamond_schema = Schema({
     "carat": f.Field(),
-    "type": f.Constant("diamond")  # this will be used to know which mapping to used while loading JSON
-}))
+    "type": f.Constant("diamond")  # this will be used to know which schema to used while loading JSON
+})
+mapper.register(Diamond, diamond_schema)
 
 # Change our painting schema in order to include a `type` field
-painting_mapping = mapper.register(Painting, Schema({
+painting_schema = Schema({
     "name": f.String(),
     "type": f.Constant("painting"),
-    "author": f.Object(artist_mapping)
-}))
+    "author": f.Object(artist_schema)
+})
+mapper.register(Painting, painting_schema)
 
 # Use `PolymorphicList` for `stolen_items`
-thief_mapping = mapper.register(Thief, Schema({
+thief_schema = Schema({
     "name": f.String(),
     "stolenItems": f.PolymorphicList(on="type",  # JSON key to lookup for the polymorphic type
                                      binding="stolen_items",
-                                     mappings={
-                                         "painting": painting_mapping,  # if `type == "painting"` then use painting_mapping
-                                         "diamond": diamond_mapping  # if `type == "diamond"` then use diamond_mapping
+                                     schemas={
+                                         "painting": painting_schema,  # if `type == "painting"` then use painting_schema
+                                         "diamond": diamond_schema  # if `type == "diamond"` then use diamond_schema
                                      })
-}))
+})
+mapper.register(Thief, thief_schema)
 
 
 diamond = Diamond(carat=20)
@@ -186,7 +193,7 @@ assert data == {
 }
 
 # Load data
-thief = mapper.load(data, thief_mapping)
+thief = mapper.load(data, thief_schema)
 assert isinstance(thief.stolen_items[0], Painting)
 assert isinstance(thief.stolen_items[1], Diamond)
 ```
@@ -207,16 +214,17 @@ from models import Artist
 
 mapper = Mapper()
 
-mapping = mapper.register(Artist, Schema({
+artist_schema = Schema({
     "name": f.String(validators=[v.Length(max=10)]),
-}))
+})
+mapper.register(Artist, artist_schema)
 
 data = {
     "name": "Leonardo da Vinci"
 }
 
 try:
-    mapper.load(data, mapping, allow_partial=True)
+    mapper.load(data, artist_schema, allow_partial=True)
 except InvalidDocument as errors:
     error = errors[0]
     assert isinstance(error, InvalidLength)

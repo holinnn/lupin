@@ -17,35 +17,38 @@ class Field(object):
         self.is_read_only = read_only
         self.is_optional = optional
 
-    def load(self, value):
+    def load(self, value, mapper):
         """Loads python object from JSON value
 
         Args:
             value (object): a value
+            mapper (Mapper): mapper used to load data
 
         Returns:
             object
         """
         return value
 
-    def dump(self, value):
+    def dump(self, value, mapper):
         """Dump value to its JSON representation
 
         Args:
             value (object): a value
+            mapper (Mapper): mapper used to dump data
 
         Returns:
             object
         """
         return value
 
-    def extract_attr(self, obj, key=None):
+    def extract_attr(self, obj, mapper, key=None):
         """Get value of the `key` attribute of object.
         If field has been provided a `binding` then it will
         override `key`
 
         Args:
             obj (object): object to get value from
+            mapper (Mapper): mapper used to dump data
             key (str): attribute name
 
         Returns:
@@ -53,14 +56,15 @@ class Field(object):
         """
         key = self.binding or key
         raw_value = getattr(obj, key)
-        return self.dump(raw_value)
+        return self.dump(raw_value, mapper)
 
-    def validate(self, value, path):
+    def validate(self, value, path, mapper):
         """Validate value againt field validators
 
         Args:
             value (object): value to validate
             path (list): JSON path of value
+            mapper (Mapper): mapper used to validate data
         """
         for validator in self._validators:
             validator(value, path)

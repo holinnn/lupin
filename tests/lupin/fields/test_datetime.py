@@ -1,6 +1,11 @@
 from datetime import datetime
-from lupin import fields
+from lupin import fields, Mapper
 import pytest
+
+
+@pytest.fixture
+def mapper():
+    return Mapper()
 
 
 @pytest.fixture
@@ -14,10 +19,10 @@ def time():
 
 
 class TestDump(object):
-    def test_returns_datetime_as_string(self, field, time):
-        assert field.dump(time) == "2017-10-07T17:35:00"
+    def test_returns_datetime_as_string(self, field, time, mapper):
+        assert field.dump(time, mapper) == "2017-10-07T17:35:00"
 
 
 class TestLoad(object):
-    def test_returns_a_datetime(self, field, time):
-        assert field.load("2017-10-07T17:35:00") == time
+    def test_returns_a_datetime(self, field, time, mapper):
+        assert field.load("2017-10-07T17:35:00", mapper) == time
