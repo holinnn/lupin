@@ -16,22 +16,24 @@ class DateTime(Field):
         super(DateTime, self).__init__(*args, **kwargs)
         self._format = format
 
-    def load(self, value):
+    def load(self, value, mapper):
         """Loads a datetime python object from a JSON string
 
         Args:
             value (str): a value
+            mapper (Mapper): mapper used to load data
 
         Returns:
             datetime
         """
         return datetime.strptime(value, self._format)
 
-    def dump(self, value):
+    def dump(self, value, mapper):
         """Dump a datetime to string representation
 
         Args:
             value (datetime): a datetime
+            mapper (Mapper): mapper used to dump data
 
         Returns:
             str

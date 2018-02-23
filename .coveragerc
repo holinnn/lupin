@@ -1,6 +1,5 @@
 # .coveragerc to control coverage.py
 [run]
-branch = True
 source = lupin
 # omit = bad_file.py
 
