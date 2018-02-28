@@ -1,3 +1,4 @@
+from copy import copy
 from collections import defaultdict
 
 from . import Mapping, bind
@@ -44,7 +45,7 @@ class Mapper(object):
             for item in data:
                 self.validate(item, schema, allow_partial)
         else:
-            mapping = self._schemas_to_mapping[schema]
+            mapping = self.get_schema_mapping(schema)
             mapping.validate(data, self, allow_partial=allow_partial)
 
     def load(self, data, schema, allow_partial=False):
@@ -61,7 +62,7 @@ class Mapper(object):
         if isinstance(data, (list, set, tuple)):
             return [self.load(item, schema, allow_partial) for item in data]
 
-        mapping = self._schemas_to_mapping[schema]
+        mapping = self.get_schema_mapping(schema)
         return mapping.load(data, self, allow_partial=allow_partial)
 
     def load_attrs(self, data, schema, allow_partial=False):
@@ -95,13 +96,8 @@ class Mapper(object):
         if isinstance(obj, (list, set, tuple)):
             return [self.dump(item, schema) for item in obj]
 
-        try:
-            if schema:
-                mapping = self._schemas_to_mapping[schema]
-            else:
-                mapping = self._classes_to_mappings[type(obj)][0]
-        except (KeyError, IndexError):
-            raise MissingMapping(type(obj))
+        schemas = (schema,) if schema else None
+        mapping = self.get_object_mapping(obj, schemas)
 
         return mapping.dump(obj, self)
 
@@ -118,6 +114,7 @@ class Mapper(object):
             Mapping
         """
         try:
+            obj_type = type(obj)
             if schemas is not None:
                 mappings = [self._schemas_to_mapping[schema]
                             for schema in schemas]
@@ -125,11 +122,20 @@ class Mapper(object):
                     if mapping.can_handle(obj):
                         return mapping
             else:
-                return self._classes_to_mappings[type(obj)][0]
-        except (KeyError, IndexError):
-            raise MissingMapping(type(obj))
-        else:
-            raise MissingMapping(type(obj))
+                return self._classes_to_mappings[obj_type][0]
+        except KeyError: # one of the schemas was not registered
+            pass
+        except IndexError: # No mapping in self._classes_to_mappings
+            # try to find a mapping that can handle the parent class of object
+            # and register it for future calls
+            mappings = self._classes_to_mappings.values()
+            for type_mappings in mappings:
+                for mapping in type_mappings:
+                    if mapping.can_handle(obj):
+                        self.register(obj_type, copy(mapping.schema))
+                        return self.get_object_mapping(obj)
+
+        raise MissingMapping(obj_type)
 
     def get_schema_mapping(self, schema):
         """Returns mapping associated to schema.

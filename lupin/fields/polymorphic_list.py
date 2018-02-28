@@ -1,7 +1,6 @@
 from . import Field
 from ..validators import Type
 from ..errors import MissingPolymorphicKey, InvalidPolymorphicType
-from ..utils import get_mapping
 
 
 class PolymorphicList(Field):

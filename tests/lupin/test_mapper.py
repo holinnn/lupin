@@ -122,3 +122,15 @@ class TestGetObjectMapping(object):
     def test_raise_error_if_no_mapping_among_schemas_provided(self, mapper):
         with pytest.raises(MissingMapping):
             mapper.get_object_mapping(46, schemas=[])
+
+    def test_returns_a_mapping_from_the_super_class(self, mapper, thief_schema):
+        class JuniorThief(Thief):
+            pass
+
+        thief = JuniorThief("John", "Doe")
+        mapping = mapper.get_object_mapping(thief)
+        data = mapping.dump(thief, mapper)
+        assert data == {
+            "firstName": "John",
+            "lastName": "Doe"
+        }
