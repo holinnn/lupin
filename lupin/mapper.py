@@ -121,8 +121,8 @@ class Mapper(object):
                 for mapping in mappings:
                     if mapping.can_handle(obj):
                         return mapping
-            else:
-                return self._classes_to_mappings[obj_type][0]
+
+            return self._classes_to_mappings[obj_type][0]
         except KeyError: # one of the schemas was not registered
             pass
         except IndexError: # No mapping in self._classes_to_mappings
