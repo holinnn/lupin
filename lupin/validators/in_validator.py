@@ -1,7 +1,8 @@
+from . import Validator
 from ..errors import InvalidIn
 
 
-class In(object):
+class In(Validator):
     """Validates that a value is contained in a set of values"""
 
     def __init__(self, values):

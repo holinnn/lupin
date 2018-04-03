@@ -1,7 +1,8 @@
+from . import Validator
 from ..errors import InvalidRange
 
 
-class Between(object):
+class Between(Validator):
     """Validates that a value is contained within bounds"""
     def __init__(self, min=None, max=None, include_min=True, include_max=True):
         """

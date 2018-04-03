@@ -1,3 +1,4 @@
+from .validator import Validator  # NOQA
 from .type import Type  # NOQA
 from .equal import Equal  # NOQA
 from .match import Match  # NOQA

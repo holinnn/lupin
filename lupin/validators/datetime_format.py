@@ -1,9 +1,10 @@
 from datetime import datetime
 
+from . import Validator
 from ..errors import InvalidDateTimeFormat
 
 
-class DateTimeFormat(object):
+class DateTimeFormat(Validator):
     """Validates date and datetimes format"""
 
     def __init__(self, format):

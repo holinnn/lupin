@@ -1,7 +1,8 @@
+from . import Validator
 from lupin.errors import InvalidType
 
 
-class Type(object):
+class Type(Validator):
     """Validates that data is of a certain type"""
 
     def __init__(self, expected_type):

@@ -1,7 +1,8 @@
+from . import Validator
 from ..errors import InvalidMatch
 
 
-class Match(object):
+class Match(Validator):
     """Validate that a string matches a pattern"""
 
     def __init__(self, regex):

@@ -1,8 +1,9 @@
 from six.moves.urllib.parse import urlparse
+from . import Validator
 from ..errors import InvalidURL
 
 
-class URL(object):
+class URL(Validator):
     """Validate that value is a well formed URL"""
     def __init__(self, schemes=None):
         """

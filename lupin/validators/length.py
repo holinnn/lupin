@@ -1,7 +1,8 @@
+from . import Validator
 from ..errors import InvalidLength
 
 
-class Length(object):
+class Length(Validator):
     """Validates the size of value"""
 
     def __init__(self, min=None, max=None):
