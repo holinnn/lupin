@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from lupin import ValidatorsOrCombination, ValidatorsAndCombination
 from lupin.errors import ValidationError
 from lupin.validators import Equal
@@ -54,6 +55,6 @@ class TestOr(object):
 
 class TestAnd(object):
     def test_returns_an_and_combination(self, valid):
-        combination = valid & valid
+        combination = valid | valid
         result = combination & valid
         assert isinstance(result, ValidatorsAndCombination)

@@ -19,5 +19,8 @@ class Match(Validator):
             value (str): string to validate
             path (list): error path
         """
-        if not self._regex.match(value):
+        try:
+            if not self._regex.match(value):
+                raise InvalidMatch(value, self._regex, path)
+        except TypeError:
             raise InvalidMatch(value, self._regex, path)

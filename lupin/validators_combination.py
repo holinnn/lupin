@@ -2,6 +2,21 @@ from .validators import Validator
 from .errors import ValidationError
 
 
+class ValidatorsNullCombination(object):
+    """Used as a default validators combination when a field has no
+    validators.
+    """
+
+    def __call__(self, *args, **kwargs):
+        """Null combination does nothing"""
+
+    def __and__(self, other):
+        return ValidatorsAndCombination([other])
+
+    def __or__(self, other):
+        return ValidatorsOrCombination([other])
+
+
 class ValidatorsAndCombination(object):
     """Represents an & combination of validators.
     It raise error if at least one validator is invalid.

@@ -21,7 +21,11 @@ class Length(Validator):
             value (object): value to validate
             path (list): error path
         """
-        length = len(value)
+        try:
+            length = len(value)
+        except TypeError:
+            raise InvalidLength(None, self._min, self._max, path)
+
         if self._min is not None and length < self._min or\
                 self._max is not None and length > self._max:
             raise InvalidLength(length, self._min, self._max, path)

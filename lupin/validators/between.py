@@ -24,12 +24,17 @@ class Between(Validator):
             value (object): value to validate
             path (list): error path
         """
-        if self._min is not None and\
-                (self._include_min and value < self._min or\
-                 not self._include_min and value <= self._min):
-            raise InvalidRange(value, self._min, self._max, path=path)
+        try:
+            if self._min is not None and\
+                    (self._include_min and value < self._min or
+                     not self._include_min and value <= self._min) or\
+                    value is None:
+                raise InvalidRange(value, self._min, self._max, path=path)
 
-        if self._max is not None and\
-                (self._include_max and value > self._max or\
-                 not self._include_max and value >= self._max):
+            if self._max is not None and\
+                    (self._include_max and value > self._max or
+                     not self._include_max and value >= self._max) or\
+                    value is None:
+                raise InvalidRange(value, self._min, self._max, path=path)
+        except TypeError:
             raise InvalidRange(value, self._min, self._max, path=path)

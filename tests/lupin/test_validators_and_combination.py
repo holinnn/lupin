@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 from lupin import ValidatorsAndCombination, ValidatorsOrCombination
 from lupin.validators import Equal

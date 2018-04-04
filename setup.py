@@ -17,7 +17,7 @@ try:
     long_description = pypandoc.convert("README.md", "rst")
     with open("README.rst", "w") as f:
         f.write(long_description)
-except (ImportError, OSError):
+except (ImportError, OSError, UnicodeEncodeError):
     with open("README.md") as f:
         long_description = f.read()
 

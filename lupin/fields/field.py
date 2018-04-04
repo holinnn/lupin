@@ -1,16 +1,31 @@
+import warnings
+from lupin import ValidatorsAndCombination, ValidatorsNullCombination
+from ..validators import IsNone
+
+
 class Field(object):
     """Generic field that does not convert the values"""
 
     def __init__(self, binding=None, default=None, validators=None, read_only=False,
-                 optional=False):
+                 optional=False, allow_none=False):
         """
         Args:
             binding (str): attribute name to map on object
             default (object): default value if data is absent
-            validators (list): list of validators
+            validators (list|ValidatorsCombination|Validator): list of validators or a combination a validators
             read_only (bool): if True the field will only be used to serialize data
             optional (bool): if True it won't raise an error if no value provided for this field
+            allow_none (bool): if True None is a accepted has a valid value
         """
+        if validators is None:
+            validators = ValidatorsNullCombination()
+        elif isinstance(validators, (list, tuple)):
+            warnings.warn("List of validators is deprecated, please use combinations (&|)", DeprecationWarning)
+            validators = ValidatorsAndCombination(validators)
+
+        if allow_none:
+            validators = validators | IsNone()
+
         self.binding = binding
         self.default = default
         self._validators = validators or []
@@ -66,5 +81,4 @@ class Field(object):
             path (list): JSON path of value
             mapper (Mapper): mapper used to validate data
         """
-        for validator in self._validators:
-            validator(value, path)
+        self._validators(value, path)

@@ -19,7 +19,11 @@ class URL(Validator):
             value (object): value to validate
             path (list): error path
         """
-        result = urlparse(value)
+        try:
+            result = urlparse(value)
+        except AttributeError:
+            raise InvalidURL(value, path=path)
+
         if self._schemes and result.scheme not in self._schemes or\
                 not (result.scheme and result.netloc):
             raise InvalidURL(value, path=path)

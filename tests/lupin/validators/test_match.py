@@ -19,3 +19,7 @@ class TestCall(object):
 
     def test_does_nothing_if_match(self, validator):
         validator("hello", [])
+
+    def test_raise_error_value_is_not_a_string(self, validator):
+        with pytest.raises(InvalidMatch) as exc:
+            validator(None, [])

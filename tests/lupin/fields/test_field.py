@@ -33,3 +33,7 @@ class TestValidate(object):
     def test_raise_error_if_invalid_data(self, field, mapper):
         with pytest.raises(e.InvalidType):
             field.validate(46, [], mapper)
+
+    def test_do_not_raise_error_if_allow_none_is_trye(self, mapper):
+        field = f.Field(validators=[v.Type(str)], allow_none=True)
+        field.validate(None, [], mapper)
