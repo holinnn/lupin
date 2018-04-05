@@ -1,4 +1,5 @@
 from . import Field
+from .compatibility import merge_validator
 from ..validators import Type
 
 
@@ -12,7 +13,7 @@ class List(Field):
         Args:
             field (Field): a field handling list items
         """
-        kwargs.setdefault("validators", []).append(Type(list))
+        merge_validator(kwargs, Type(list))
         super(List, self).__init__(**kwargs)
         self._field = field
 

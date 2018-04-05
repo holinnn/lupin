@@ -5,7 +5,7 @@ from models import Artist
 mapper = Mapper()
 
 artist_schema = Schema({
-    "name": f.String(validators=[v.Length(max=10)]),
+    "name": f.String(validators=v.Length(max=10)),
 })
 
 mapping = mapper.register(Artist, artist_schema)

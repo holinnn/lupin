@@ -1,4 +1,5 @@
 from . import Field
+from .compatibility import merge_validator
 from ..validators import Type
 
 
@@ -13,7 +14,7 @@ class Object(Field):
         Args:
             schema (Schema): schema of nested object
         """
-        kwargs.setdefault("validators", []).append(Type(dict))
+        merge_validator(kwargs, Type(dict))
         super(Object, self).__init__(*args, **kwargs)
         self._schema = schema
 
@@ -56,4 +57,4 @@ class Object(Field):
             mapper (Mapper): mapper used to dump data
         """
         super(Object, self).validate(value, path, mapper)
-        self._schema.validate(value, mapper, path)
+        self._schema.validate(value, mapper, path=path)

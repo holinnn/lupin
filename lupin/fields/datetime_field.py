@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from . import Field
+from .compatibility import merge_validator
 from ..validators import Type
 
 
@@ -12,7 +13,7 @@ class DateTime(Field):
         Args:
             format (str): datetime format to use
         """
-        kwargs.setdefault("validators", []).append(Type(str))
+        merge_validator(kwargs, Type(str))
         super(DateTime, self).__init__(*args, **kwargs)
         self._format = format
 

@@ -215,7 +215,7 @@ from models import Artist
 mapper = Mapper()
 
 artist_schema = Schema({
-    "name": f.String(validators=[v.Length(max=10)]),
+    "name": f.String(validators=v.Length(max=10)),
 })
 mapper.register(Artist, artist_schema)
 
@@ -238,3 +238,28 @@ Current validators are :
 - `Length` (validate the length of a value)
 - `Match` (validate the format of a value with a regex)
 - `Type` (validate the type of a value, this validator is already included in all fields to match the field type)
+- `URL` (validate an URL string format)
+- `IsNone` (validate that value is None)
+- `Between` (validate that value belongs to a range)
+
+
+#### Combination
+
+You can build validators combinations using the `&` and `|` operator.
+
+Example :
+
+```python
+from lupin import validators as v
+from lupin.errors import ValidationError
+
+validators = v.Equal("Lupin") | v.Equal("Andrésy")
+# validators passes only if value is "Lupin" or "Andrésy"
+
+validators("Lupin", [])
+
+try:
+    validators("Holmes", [])
+except ValidationError:
+    print("Validation error")
+```
