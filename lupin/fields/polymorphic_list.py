@@ -1,4 +1,5 @@
 from . import Field
+from .compatibility import merge_validator
 from ..validators import Type
 from ..errors import MissingPolymorphicKey, InvalidPolymorphicType
 
@@ -21,7 +22,7 @@ class PolymorphicList(Field):
             on (str): JSON key used to get the object type
             schemas (dict): schemas used for each values used for the `on` key
         """
-        kwargs.setdefault("validators", []).append(Type(list))
+        merge_validator(kwargs, Type(list))
         super(PolymorphicList, self).__init__(**kwargs)
         self._on = on
         self._schemas_by_json_value = schemas

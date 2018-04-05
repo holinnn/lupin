@@ -191,6 +191,20 @@ class InvalidDateTimeFormat(ValidationError):
         self.format = format
 
 
+class NotNone(ValidationError):
+    """Error raised by `IsNone` validator"""
+
+    def __init__(self, invalid, path):
+        """
+        Args:
+            invalid (str): invalid value
+            path (list): path of the invalid data
+        """
+        message = "Value is not None : %s" % (invalid)
+        super(NotNone, self).__init__(message, path)
+        self.invalid = invalid
+
+
 class MissingPolymorphicKey(ValidationError):
     """Error raised if Polymorphic object do not contain a type key"""
 

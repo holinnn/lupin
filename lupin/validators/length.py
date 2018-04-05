@@ -1,7 +1,8 @@
+from . import Validator
 from ..errors import InvalidLength
 
 
-class Length(object):
+class Length(Validator):
     """Validates the size of value"""
 
     def __init__(self, min=None, max=None):
@@ -20,7 +21,11 @@ class Length(object):
             value (object): value to validate
             path (list): error path
         """
-        length = len(value)
+        try:
+            length = len(value)
+        except TypeError:
+            raise InvalidLength(None, self._min, self._max, path)
+
         if self._min is not None and length < self._min or\
                 self._max is not None and length > self._max:
             raise InvalidLength(length, self._min, self._max, path)

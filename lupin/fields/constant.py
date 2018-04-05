@@ -1,4 +1,5 @@
 from . import Field
+from .compatibility import merge_validator
 from ..validators import Equal
 
 
@@ -10,7 +11,7 @@ class Constant(Field):
         Args:
             value (object): fixed value
         """
-        kwargs.setdefault("validators", []).append(Equal(value))
+        merge_validator(kwargs, Equal(value))
         super(Constant, self).__init__(**kwargs)
         self._value = value
 

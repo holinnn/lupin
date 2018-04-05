@@ -25,3 +25,8 @@ class TestCall(object):
         validator(1.5, path=[])
         validator(2, path=[])
         validator(1, path=[])
+
+    def test_raise_error_if_not_a_number(self):
+        validator = Between(max=1, include_max=False)
+        with pytest.raises(InvalidRange):
+            validator(None, path=[])

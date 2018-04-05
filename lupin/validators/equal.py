@@ -1,7 +1,8 @@
+from . import Validator
 from ..errors import NotEqual
 
 
-class Equal(object):
+class Equal(Validator):
     """Validate that a value equals an expected one"""
 
     def __init__(self, expected):

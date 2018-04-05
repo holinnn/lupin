@@ -12,7 +12,8 @@ VALID_URLS = [
 
 INVALID_URLS = [
     "www.example.com",
-    "http://"
+    "http://",
+    None
 ]
 
 

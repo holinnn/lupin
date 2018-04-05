@@ -1,7 +1,8 @@
+from . import Validator
 from ..errors import InvalidMatch
 
 
-class Match(object):
+class Match(Validator):
     """Validate that a string matches a pattern"""
 
     def __init__(self, regex):
@@ -18,5 +19,8 @@ class Match(object):
             value (str): string to validate
             path (list): error path
         """
-        if not self._regex.match(value):
+        try:
+            if not self._regex.match(value):
+                raise InvalidMatch(value, self._regex, path)
+        except TypeError:
             raise InvalidMatch(value, self._regex, path)

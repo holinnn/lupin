@@ -20,3 +20,7 @@ class TestCall(object):
 
     def test_does_nothing_if_enough_values(self, validator):
         validator([1, 2], [])
+
+    def test_raise_error_if_value_has_no_length(self, validator):
+        with pytest.raises(InvalidLength):
+            validator(None, [])
