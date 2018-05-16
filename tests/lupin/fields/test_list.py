@@ -37,11 +37,17 @@ class TestLoad(object):
         result = field.load(datetime_strings, mapper)
         assert result == datetimes
 
+    def test_returns_none_if_value_is_null(self, field, mapper):
+        assert field.load(None, mapper) is None
+
 
 class TestDump(object):
     def test_returns_a_list_of_datetime_strings(self, field, datetimes, datetime_strings, mapper):
         result = field.dump(datetimes, mapper)
         assert result == datetime_strings
+
+    def test_returns_none_if_value_is_null(self, field, mapper):
+        assert field.dump(None, mapper) is None
 
 
 class TestValidate(object):

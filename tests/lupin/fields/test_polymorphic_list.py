@@ -30,6 +30,9 @@ class TestLoad(object):
         assert isinstance(mona_lisa, Painting)
         assert isinstance(diamond, Jewel)
 
+    def test_returns_none_if_value_is_null(self, field, mapper):
+        assert field.load(None, mapper) is None
+
 
 class TestDump(object):
     def test_dumps_different_object_types(self, field, stolen_items, stolen_items_data, mapper):

@@ -27,6 +27,9 @@ class Date(Field):
         Returns:
             date
         """
+        if value is None:
+            return None
+
         return datetime.strptime(value, self._format).date()
 
     def dump(self, value, mapper):
@@ -39,4 +42,7 @@ class Date(Field):
         Returns:
             str
         """
+        if value is None:
+            return None
+
         return value.strftime(self._format)

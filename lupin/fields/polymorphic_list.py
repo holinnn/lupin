@@ -38,6 +38,9 @@ class PolymorphicList(Field):
         Returns:
             list
         """
+        if value is None:
+            return None
+
         return [mapper.load(item, self._schemas_by_json_value[item[self._on]])
                 for item
                 in value]
