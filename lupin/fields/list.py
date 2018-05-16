@@ -27,6 +27,9 @@ class List(Field):
         Returns:
             list
         """
+        if value is None:
+            return None
+
         return [self._field.load(item, mapper) for item in value]
 
     def dump(self, value, mapper):
@@ -39,6 +42,9 @@ class List(Field):
         Returns:
             list
         """
+        if value is None:
+            return None
+
         return [self._field.dump(item, mapper) for item in value]
 
     def validate(self, value, path, mapper):
