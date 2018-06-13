@@ -39,6 +39,10 @@ class TestDump(object):
 
 
 class TestValidate(object):
+    def test_do_not_raise_error_if_none_and_allow_none(self, thief_schema):
+        field = Object(thief_schema, allow_none=True)
+        field.validate(None, [], mapper)
+
     def test_does_nothing_if_valid(self, field, thief_data, mapper):
         field.validate(thief_data, [], mapper)
 

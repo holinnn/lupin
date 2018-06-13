@@ -56,6 +56,7 @@ class List(Field):
             mapper (Mapper): mapper used to validate data
         """
         super(List, self).validate(value, path, mapper)
-        for item_index, item in enumerate(value):
-            item_path = path + [str(item_index)]
-            self._field.validate(item, item_path, mapper)
+        if value is not None:
+            for item_index, item in enumerate(value):
+                item_path = path + [str(item_index)]
+                self._field.validate(item, item_path, mapper)

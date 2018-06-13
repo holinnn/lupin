@@ -67,15 +67,16 @@ class PolymorphicObject(Field):
             mapper (Mapper): mapper used to validate data
         """
         super(PolymorphicObject, self).validate(value, path, mapper)
-        if self._on not in value:
-            raise MissingPolymorphicKey(self._on, path)
+        if value is not None:
+            if self._on not in value:
+                raise MissingPolymorphicKey(self._on, path)
 
-        obj_type = value[self._on]
-        if obj_type not in self._schemas_by_json_value:
-            raise InvalidPolymorphicType(invalid_type=obj_type,
-                                         supported_types=list(self._schemas_by_json_value.keys()),
-                                         path=path+[self._on])
+            obj_type = value[self._on]
+            if obj_type not in self._schemas_by_json_value:
+                raise InvalidPolymorphicType(invalid_type=obj_type,
+                                             supported_types=list(self._schemas_by_json_value.keys()),
+                                             path=path+[self._on])
 
-        schema = self._schemas_by_json_value[obj_type]
-        mapping = mapper.get_schema_mapping(schema)
-        mapping.validate(value, mapper, path=path)
+            schema = self._schemas_by_json_value[obj_type]
+            mapping = mapper.get_schema_mapping(schema)
+            mapping.validate(value, mapper, path=path)

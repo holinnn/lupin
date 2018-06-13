@@ -57,4 +57,5 @@ class Object(Field):
             mapper (Mapper): mapper used to dump data
         """
         super(Object, self).validate(value, path, mapper)
-        self._schema.validate(value, mapper, path=path)
+        if value is not None:
+            self._schema.validate(value, mapper, path=path)
