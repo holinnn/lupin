@@ -51,6 +51,10 @@ class TestDump(object):
 
 
 class TestValidate(object):
+    def test_do_not_raise_error_if_none_and_allow_none(self):
+        field = List(DateTime(format="%Y-%m-%d"), allow_none=True)
+        field.validate(None, [], mapper)
+
     def test_raise_exception_if_not_list(self, field):
         with pytest.raises(InvalidType):
             field.validate("", [], mapper)

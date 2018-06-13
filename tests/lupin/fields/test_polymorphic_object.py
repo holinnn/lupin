@@ -49,6 +49,17 @@ class TestDump(object):
 
 
 class TestValidate(object):
+    def test_do_not_raise_error_if_none_and_allow_none(self, mapper, jewel_schema, painting_schema):
+        mapper.register(Jewel, jewel_schema)
+        mapper.register(Painting, painting_schema)
+        field = f.PolymorphicObject(on="type",
+                                    schemas={
+                                        "jewel": jewel_schema,
+                                        "painting": painting_schema
+                                    },
+                                    allow_none=True)
+        field.validate(None, [], mapper)
+
     def test_raise_exception_if_not_dict(self, field, mapper):
         with pytest.raises(InvalidType):
             field.validate("", [], mapper)
