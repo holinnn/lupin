@@ -2,7 +2,7 @@ from copy import copy
 from collections import defaultdict
 
 from . import Mapping, bind
-from .errors import MissingMapping, SchemaAlreadyRegistered
+from .errors import MissingMapping, SchemaAlreadyRegistered, InvalidPolymorphicType
 
 
 class Mapper(object):
@@ -65,6 +65,31 @@ class Mapper(object):
         mapping = self.get_schema_mapping(schema)
         return mapping.load(data, self, allow_partial=allow_partial)
 
+    def load_polymorphic(self, data, on, schemas, allow_partial=False):
+        """Loads an object that can be of different type
+        based on the `on` field
+
+        Args:
+            data (dict|list): JSON data
+            on (str): JSON key used to get the object type
+            schemas (dict): schemas used for each values used for the `on` key
+            allow_partial (bool): allow partial schema, won't raise error if missing keys
+
+        Returns:
+            list|object
+        """
+        if isinstance(data, (list, set, tuple)):
+            return [self.load_polymorphic(item, on, schemas, allow_partial) for item in data]
+
+        obj_type = data.get(on)
+        if obj_type not in schemas:
+            raise InvalidPolymorphicType(invalid_type=obj_type,
+                                         supported_types=list(schemas.keys()),
+                                         path=[on])
+
+        schema = schemas[obj_type]
+        return self.load(data, schema, allow_partial)
+
     def load_attrs(self, data, schema, allow_partial=False):
         """Loads attributes dictionary from `data`
 
@@ -123,9 +148,9 @@ class Mapper(object):
                         return mapping
 
             return self._classes_to_mappings[obj_type][0]
-        except KeyError: # one of the schemas was not registered
+        except KeyError:  # one of the schemas was not registered
             pass
-        except IndexError: # No mapping in self._classes_to_mappings
+        except IndexError:  # No mapping in self._classes_to_mappings
             # try to find a mapping that can handle the parent class of object
             # and register it for future calls
             mappings = self._classes_to_mappings.values()

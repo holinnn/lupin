@@ -1,16 +1,14 @@
 # coding: utf-8
 import pytest
 
-from lupin import Mapper, Mapping, Schema, String
-from lupin.errors import MissingMapping, SchemaAlreadyRegistered, InvalidDocument
-from tests.fixtures import Thief
+from lupin import Mapper, Schema
+from lupin.errors import MissingMapping, SchemaAlreadyRegistered, InvalidDocument, InvalidPolymorphicType
+from tests.fixtures import Thief, Painting, Jewel
 
 
 @pytest.fixture
 def mapper():
     return Mapper()
-
-
 
 
 class TestRegister(object):
@@ -64,6 +62,39 @@ class TestLoad(object):
         thieves = mapper.load([thief_data], thief_schema)
         assert isinstance(thieves, list)
         assert isinstance(thieves[0], Thief)
+
+
+class TestLoadPolymorphic(object):
+    @pytest.fixture(autouse=True)
+    def setup(self, mapper, painting_schema, jewel_schema):
+        mapper.register(Jewel, jewel_schema)
+        mapper.register(Painting, painting_schema)
+
+    def test_returns_a_painting(self, mapper, painting_schema, jewel_schema, mona_lisa_data):
+        result = mapper.load_polymorphic(mona_lisa_data,
+                                         on="type",
+                                         schemas={
+                                             "painting": painting_schema,
+                                             "jewel": jewel_schema
+                                         })
+
+        assert isinstance(result, Painting)
+
+    def test_loads_list(self, mapper, painting_schema, jewel_schema, stolen_items_data):
+        result = mapper.load_polymorphic(stolen_items_data,
+                                         on="type",
+                                         schemas={
+                                             "painting": painting_schema,
+                                             "jewel": jewel_schema
+                                         })
+
+        assert len(result) == 2
+        assert isinstance(result[0], Painting)
+        assert isinstance(result[1], Jewel)
+
+    def test_raise_error_if_invalid_type(self, mapper, painting_schema):
+        with pytest.raises(InvalidPolymorphicType):
+            mapper.load_polymorphic({}, on="type", schemas={"painting_schema": painting_schema})
 
 
 class TestValidate(object):
