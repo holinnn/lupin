@@ -6,7 +6,7 @@ mapper = Mapper()
 
 artist_schema = Schema({
     "name": f.String(validators=v.Length(max=10)),
-})
+}, name="artist")
 
 mapping = mapper.register(Artist, artist_schema)
 
@@ -15,7 +15,7 @@ data = {
 }
 
 try:
-    mapper.load(data, artist_schema, allow_partial=True)
+    mapper.load(data, "artist", allow_partial=True)
 except InvalidDocument as errors:
     error = errors[0]
     assert isinstance(error, InvalidLength)

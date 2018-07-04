@@ -1,7 +1,7 @@
 # coding: utf-8
 import pytest
 
-from lupin import Constant, fields as f, Mapper
+from lupin import Constant, fields as f, Mapper, Schema
 from lupin.errors import InvalidDocument, InvalidType, MissingKey
 from tests.fixtures import Thief
 
@@ -9,6 +9,12 @@ from tests.fixtures import Thief
 @pytest.fixture
 def mapper():
     return Mapper()
+
+
+class TestConstructor(object):
+    def test_generate_name_if_absent(self):
+        schema = Schema({})
+        assert schema.name.startswith("schema")
 
 
 class TestLoad(object):
