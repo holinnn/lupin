@@ -11,7 +11,7 @@ def thief_schema():
     return Schema({
         "firstName": String(binding="first_name"),
         "lastName": String(binding="last_name")
-    })
+    }, "thief")
 
 
 @pytest.fixture
@@ -20,7 +20,7 @@ def painting_schema():
         "author": String(),
         "name": String(),
         "type": Constant("painting")
-    })
+    }, "painting")
 
 
 @pytest.fixture
@@ -29,7 +29,7 @@ def jewel_schema():
         "carat": Int(),
         "name": String(),
         "type": Constant("jewel")
-    })
+    }, "jewel")
 
 
 @pytest.fixture

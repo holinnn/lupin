@@ -15,6 +15,7 @@ class Mapper(object):
         """
         self._default_factory = default_factory
         self._schemas_to_mapping = {}
+        self._schemas_by_name = {}
         self._classes_to_mappings = defaultdict(list)
 
     def register(self, cls, schema, factory=None):
@@ -30,6 +31,7 @@ class Mapper(object):
 
         factory = factory or self._default_factory
         mapping = Mapping(cls, schema, factory)
+        self._schemas_by_name[schema.name] = schema
         self._schemas_to_mapping[schema] = mapping
         self._classes_to_mappings[cls].append(mapping)
 
@@ -38,7 +40,7 @@ class Mapper(object):
 
         Args:
             data (dict|list): JSON data
-            schema (Schema): schema used to validate data
+            schema (Schema|str): schema (or name) used to validate data
             allow_partial (bool): allow partial schema, won't raise error if missing keys
         """
         if isinstance(data, (list, set, tuple)):
@@ -53,7 +55,7 @@ class Mapper(object):
 
         Args:
             data (dict|list): JSON data
-            schema (Schema): schema used to load data
+            schema (Schema|str): schema (or name) used to load data
             allow_partial (bool): allow partial schema, won't raise error if missing keys
 
         returns:
@@ -95,7 +97,7 @@ class Mapper(object):
 
         Args:
             data (dict): dictionary of data
-            schema (Schema): schema used to load data
+            schema (Schema|str): schema used to load data (or its name)
             allow_partial (bool): allow partial schema, won't raise error if missing keys
 
         Returns:
@@ -104,7 +106,7 @@ class Mapper(object):
         if isinstance(data, (list, set, tuple)):
             return [self.load_attrs(item, schema, allow_partial) for item in data]
 
-        mapping = self._schemas_to_mapping[schema]
+        mapping = self.get_schema_mapping(schema)
         return mapping.load_attrs(data, self, allow_partial=allow_partial)
 
     def dump(self, obj, schema=None):
@@ -113,7 +115,7 @@ class Mapper(object):
 
         Args:
             obj (object|list): object to dump
-            schema (Schema): force a schema to dump object
+            schema (Schema|str): force a schema to dump object (Schema object or a name)
 
         Returns:
             dict
@@ -133,7 +135,7 @@ class Mapper(object):
 
         Args:
             obj (object): object to get mapping for
-            schemas (list<Schema>): list of Schema
+            schemas (list<Schema|str>): list of Schema
 
         Returns:
             Mapping
@@ -141,7 +143,7 @@ class Mapper(object):
         try:
             obj_type = type(obj)
             if schemas is not None:
-                mappings = [self._schemas_to_mapping[schema]
+                mappings = [self.get_schema_mapping(schema)
                             for schema in schemas]
                 for mapping in mappings:
                     if mapping.can_handle(obj):
@@ -166,9 +168,11 @@ class Mapper(object):
         """Returns mapping associated to schema.
 
         Args:
-            schema (Schema): a schema
+            schema (Schema|str): a schema or its name
 
         Returns:
             Mapping
         """
+        if isinstance(schema, str):
+            schema = self._schemas_by_name[schema]
         return self._schemas_to_mapping[schema]

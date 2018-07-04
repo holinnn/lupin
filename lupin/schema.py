@@ -1,14 +1,33 @@
+import warnings
 from . import bind
 from .errors import ValidationError, InvalidDocument, MissingKey
 
 
+# compatibility : used to generate schema names if not provided (2018-07-04)
+_globals = {
+    "schemas_count": 0
+}
+
+
+def _generate_name():
+    """Generate schema name if not provided"""
+    _globals["schemas_count"] += 1
+    return "schema%i" % _globals["schemas_count"]
+
+
 class Schema(object):
-    def __init__(self, fields):
+    def __init__(self, fields, name=None):
         """
         Args:
             fields (dict): dictionary of fields
+            name (str): schema name
         """
         self._fields = fields
+        if not name:
+            name = _generate_name()
+            warnings.warn("Anonymous schemas are deprecated, you should name your schema (generated name=%s)" % name,
+                          DeprecationWarning)
+        self.name = name
 
     def add_field(self, name, field):
         """Add new field to schema.

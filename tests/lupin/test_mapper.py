@@ -48,6 +48,10 @@ class TestDump(object):
         with pytest.raises(MissingMapping):
             mapper.dump(46)
 
+    def test_works_with_schema_name(self, mapper, thief, thief_data):
+        data = mapper.dump(thief, "thief")
+        assert data == thief_data
+
 
 class TestLoad(object):
     @pytest.fixture(autouse=True)
@@ -60,6 +64,11 @@ class TestLoad(object):
 
     def test_loads_list(self, mapper, thief_data, thief_schema):
         thieves = mapper.load([thief_data], thief_schema)
+        assert isinstance(thieves, list)
+        assert isinstance(thieves[0], Thief)
+
+    def test_load_with_schema_name(self, mapper, thief_data):
+        thieves = mapper.load([thief_data], "thief")
         assert isinstance(thieves, list)
         assert isinstance(thieves[0], Thief)
 
@@ -96,6 +105,15 @@ class TestLoadPolymorphic(object):
         with pytest.raises(InvalidPolymorphicType):
             mapper.load_polymorphic({}, on="type", schemas={"painting_schema": painting_schema})
 
+    def test_works_with_schema_names(self, mapper, painting_schema, jewel_schema, mona_lisa_data):
+        result = mapper.load_polymorphic(mona_lisa_data,
+                                         on="type",
+                                         schemas={
+                                             "painting": "painting",
+                                             "jewel": "jewel"
+                                         })
+        assert isinstance(result, Painting)
+
 
 class TestValidate(object):
     @pytest.fixture(autouse=True)
@@ -111,6 +129,9 @@ class TestValidate(object):
     def test_raise_error_if_invalid(self, mapper, thief_data, thief_schema):
         with pytest.raises(InvalidDocument):
             mapper.validate({}, thief_schema)
+
+    def test_validate_with_schema_name(self, mapper, thief_data):
+        mapper.validate(thief_data, "thief")
 
 
 class TestLoadAttrs(object):
@@ -129,6 +150,13 @@ class TestLoadAttrs(object):
         thieves = mapper.load_attrs([thief_data], thief_schema)
         assert isinstance(thieves, list)
         assert isinstance(thieves[0], dict)
+
+    def test_works_with_schema_name(self, mapper, thief_data):
+        attrs = mapper.load_attrs(thief_data, "thief")
+        assert attrs == {
+            "first_name": "Arsène",
+            "last_name": "Lupin"
+        }
 
 
 class TestGetObjectMapping(object):

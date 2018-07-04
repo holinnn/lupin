@@ -11,18 +11,18 @@ mapper = Mapper()
 artist_schema = Schema({
     "name": f.String(),
     "birthDate": f.DateTime(binding="birth_date", format="%Y-%m-%d")
-})
+}, name="artist")
 
 diamond_schema = Schema({
     "carat": f.Field(),
     "type": f.Constant("diamond")  # this will be used to know which mapping to used while loading JSON
-})
+}, name="diamond")
 
 painting_schema = Schema({
     "name": f.String(),
     "type": f.Constant("painting"),
     "author": f.Object(artist_schema)
-})
+}, name="painting")
 
 # Use `PolymorphicList` for `stolen_items`
 thief_schema = Schema({
@@ -33,7 +33,7 @@ thief_schema = Schema({
                                          "painting": painting_schema,  # if `type == "painting"` then use painting_schema
                                          "diamond": diamond_schema  # if `type == "diamond"` then use diamond_schema
                                      })
-})
+}, name="thief")
 
 
 mapper.register(Artist, artist_schema)
@@ -66,6 +66,6 @@ assert data == {
 }
 
 # Load data
-thief = mapper.load(data, thief_schema)
+thief = mapper.load(data, "thief")
 assert isinstance(thief.stolen_items[0], Painting)
 assert isinstance(thief.stolen_items[1], Diamond)

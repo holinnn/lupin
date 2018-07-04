@@ -47,17 +47,17 @@ class Artist(object):
 artist_schema = Schema({
     "name": f.String(),
     "birthDate": f.DateTime(binding="birth_date", format="%Y-%m-%d")
-})
+}, name="artist")
 
 painting_schema = Schema({
     "name": f.String(),
     "author": f.Object(artist_schema)
-})
+}, name="painting")
 
 thief_schema = Schema({
     "name": f.String(),
     "stolenItems": f.List(painting_schema, binding="stolen_items")
-})
+}, name="thief")
 
 # 3) Create a mapper and register a schema for each of your models you want to map to JSON objects
 mapper = Mapper()
@@ -115,7 +115,7 @@ data = {
         "birthDate": "1452-04-15"
     }
 }
-painting = mapper.load(data, painting_schema)
+painting = mapper.load(data, "painting")  # "painting" is the name of the schame you want to use
 artist = painting.author
 
 assert isinstance(painting, Painting)
@@ -145,7 +145,7 @@ mapper = Mapper()
 diamond_schema = Schema({
     "carat": f.Field(),
     "type": f.Constant("diamond")  # this will be used to know which schema to used while loading JSON
-})
+}, name="diamond")
 mapper.register(Diamond, diamond_schema)
 
 # Change our painting schema in order to include a `type` field
@@ -153,7 +153,7 @@ painting_schema = Schema({
     "name": f.String(),
     "type": f.Constant("painting"),
     "author": f.Object(artist_schema)
-})
+}, name="painting")
 mapper.register(Painting, painting_schema)
 
 # Use `PolymorphicList` for `stolen_items`
@@ -165,7 +165,7 @@ thief_schema = Schema({
                                          "painting": painting_schema,  # if `type == "painting"` then use painting_schema
                                          "diamond": diamond_schema  # if `type == "diamond"` then use diamond_schema
                                      })
-})
+}, name="thief")
 mapper.register(Thief, thief_schema)
 
 
@@ -193,7 +193,7 @@ assert data == {
 }
 
 # Load data
-thief = mapper.load(data, thief_schema)
+thief = mapper.load(data, "thief")
 assert isinstance(thief.stolen_items[0], Painting)
 assert isinstance(thief.stolen_items[1], Diamond)
 ```
@@ -216,7 +216,7 @@ mapper = Mapper()
 
 artist_schema = Schema({
     "name": f.String(validators=v.Length(max=10)),
-})
+}, name="artist")
 mapper.register(Artist, artist_schema)
 
 data = {
