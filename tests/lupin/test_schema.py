@@ -2,6 +2,7 @@
 import pytest
 
 from lupin import Constant, fields as f, Mapper, Schema
+from lupin.processors import strip, lower
 from lupin.errors import InvalidDocument, InvalidType, MissingKey
 from tests.fixtures import Thief
 
@@ -52,6 +53,16 @@ class TestLoadAttrs(object):
         thief_schema.add_field("lastName", f.String(read_only=True))
         attrs = thief_schema.load_attrs(thief_data, mapper, allow_partial=True)
         assert attrs == {
+            "first_name": "Arsène"
+        }
+
+    def test_use_processors(self, thief_schema, thief_data, mapper):
+        thief_schema.add_field("lastName",
+                               f.String(pre_load=[strip], post_load=[lower], binding="last_name"))
+        thief_data["lastName"] = "  LuPin  "
+        attrs = thief_schema.load_attrs(thief_data, mapper, allow_partial=True)
+        assert attrs == {
+            "last_name": "lupin",
             "first_name": "Arsène"
         }
 

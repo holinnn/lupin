@@ -79,7 +79,10 @@ class Schema(object):
             if field.is_read_only:
                 continue
             if key in data:
-                value = field.load(data[key], mapper)
+                raw_value = data[key]
+                value = field.pre_load(raw_value)
+                value = field.load(value, mapper)
+                value = field.post_load(value)
             elif allow_partial:
                 continue
             else:
