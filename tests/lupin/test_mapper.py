@@ -2,7 +2,8 @@
 import pytest
 
 from lupin import Mapper, Schema
-from lupin.errors import MissingMapping, SchemaAlreadyRegistered, InvalidDocument, InvalidPolymorphicType
+from lupin.errors import MissingMapping, SchemaAlreadyRegistered, InvalidDocument, \
+    InvalidPolymorphicType, SchemaNotRegistered
 from tests.fixtures import Thief, Painting, Jewel
 
 
@@ -193,3 +194,7 @@ class TestGetObjectMapping(object):
             "firstName": "John",
             "lastName": "Doe"
         }
+
+    def test_raise_error_if_schema_not_registered(self, mapper, jewel_schema):
+        with pytest.raises(SchemaNotRegistered):
+            mapper.get_object_mapping(object(), [jewel_schema])

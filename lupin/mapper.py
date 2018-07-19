@@ -2,7 +2,7 @@ from copy import copy
 from collections import defaultdict
 
 from . import Mapping, bind
-from .errors import MissingMapping, SchemaAlreadyRegistered, InvalidPolymorphicType
+from .errors import MissingMapping, SchemaAlreadyRegistered, InvalidPolymorphicType, SchemaNotRegistered
 
 
 class Mapper(object):
@@ -26,8 +26,8 @@ class Mapper(object):
             schema (Schema): schema that will be used to dump & load objects of cls
             factory (callable): factory method used to instantiate objects when loading from JSON
         """
-        if schema in self._schemas_to_mapping:
-            raise SchemaAlreadyRegistered()
+        if schema.name in self._schemas_by_name:
+            raise SchemaAlreadyRegistered(schema.name)
 
         factory = factory or self._default_factory
         mapping = Mapping(cls, schema, factory)
@@ -150,8 +150,9 @@ class Mapper(object):
                         return mapping
 
             return self._classes_to_mappings[obj_type][0]
-        except KeyError:  # one of the schemas was not registered
-            pass
+        except KeyError as error:  # one of the schemas was not registered
+            schema = error.args[0]
+            raise SchemaNotRegistered(schema.name)
         except IndexError:  # No mapping in self._classes_to_mappings
             # try to find a mapping that can handle the parent class of object
             # and register it for future calls
@@ -159,7 +160,7 @@ class Mapper(object):
             for type_mappings in mappings:
                 for mapping in type_mappings:
                     if mapping.can_handle(obj):
-                        self.register(obj_type, copy(mapping.schema))
+                        self.register(obj_type, mapping.schema.copy())
                         return self.get_object_mapping(obj)
 
         raise MissingMapping(obj_type)

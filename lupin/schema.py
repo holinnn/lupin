@@ -1,4 +1,4 @@
-import warnings
+from copy import copy
 from . import bind
 from .errors import ValidationError, InvalidDocument, MissingKey
 
@@ -25,8 +25,6 @@ class Schema(object):
         self._fields = fields
         if not name:
             name = _generate_name()
-            warnings.warn("Anonymous schemas are deprecated, you should name your schema (generated name=%s)" % name,
-                          DeprecationWarning)
         self.name = name
 
     def add_field(self, name, field):
@@ -37,6 +35,17 @@ class Schema(object):
             field (Field): a field
         """
         self._fields[name] = field
+
+    def copy(self, new_name=None):
+        """Returns a new schema based on current schema
+
+        Args:
+            new_names (str): name of new schema
+
+        Returns:
+            Schema
+        """
+        return type(self)(copy(self._fields), new_name)
 
     def load(self, cls, data, mapper, allow_partial=False, factory=bind):
         """Loads an instance of cls from dictionary

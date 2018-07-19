@@ -104,3 +104,12 @@ class TestValidate(object):
         thief_schema.add_field("age", f.String(optional=True))
         assert "age" not in thief_data
         thief_schema.validate(thief_data, mapper)
+
+
+class TestCopy(object):
+    def test_returns_a_new_schema(self, thief_schema):
+        new_schema = thief_schema.copy("new_thief_schema")
+        assert new_schema.name == "new_thief_schema"
+        assert new_schema._fields == thief_schema._fields
+        assert new_schema._fields is not thief_schema._fields
+        assert new_schema is not thief_schema

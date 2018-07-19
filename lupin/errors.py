@@ -2,8 +2,24 @@ class SchemaAlreadyRegistered(Exception):
     """Error raised while trying to register a Schema that has already
     been registered
     """
-    def __init__(self):
-        super(SchemaAlreadyRegistered, self).__init__("Schema has already been registered in mapper")
+    def __init__(self, name):
+        """
+        Args:
+            name (str): schema name
+        """
+        super(SchemaAlreadyRegistered, self).__init__("Schema \"%s\" has already been registered in mapper" % name)
+
+
+class SchemaNotRegistered(Exception):
+    """Error raised while trying to use a Schema that has not
+    been registered
+    """
+    def __init__(self, name):
+        """
+        Args:
+            name (str): schema name
+        """
+        super(SchemaNotRegistered, self).__init__("Schema \"%s\" has not been registered in mapper" % name)
 
 
 class MissingMapping(Exception):
