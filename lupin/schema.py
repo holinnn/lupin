@@ -105,7 +105,7 @@ class Schema(object):
         """
         return {key: field.extract_attr(obj, mapper, key)
                 for key, field
-                in self._fields.items()}
+                in self._fields.items() if not field.is_write_only}
 
     def validate(self, data, mapper, allow_partial=False, path=None):
         """Validate data with all field validators.
