@@ -1,5 +1,6 @@
 from copy import copy
 from . import bind
+from .validators_combination import ValidatorsNullCombination
 from .errors import ValidationError, InvalidDocument, MissingKey
 
 
@@ -16,16 +17,22 @@ def _generate_name():
 
 
 class Schema(object):
-    def __init__(self, fields, name=None):
+    def __init__(self, fields, name=None, validators=None):
         """
         Args:
             fields (dict): dictionary of fields
             name (str): schema name
+            validators (ValidatorsCombination|Validator): list of validators or a combination a validators
         """
         self._fields = fields
+
         if not name:
             name = _generate_name()
         self.name = name
+
+        if validators is None:
+            validators = ValidatorsNullCombination()
+        self._validators = validators
 
     def add_field(self, name, field):
         """Add new field to schema.
@@ -119,6 +126,8 @@ class Schema(object):
         """
         path = path or []
         errors = []
+
+        # Validate the fields
         for key, field in self._fields.items():
             field_path = path + [key]
             if key in data:
@@ -130,5 +139,12 @@ class Schema(object):
             elif not allow_partial and not field.is_optional:
                 errors.append(MissingKey(key, field_path))
 
+        # Validate data with global validators
+        try:
+            self._validators(data, path)
+        except ValidationError as error:
+            errors.append(error)
+
         if errors:
+            raise InvalidDocument(errors)
             raise InvalidDocument(errors)

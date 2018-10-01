@@ -3,7 +3,7 @@ import pytest
 
 from lupin import Constant, fields as f, Mapper, Schema
 from lupin.processors import strip, lower
-from lupin.errors import InvalidDocument, InvalidType, MissingKey
+from lupin.errors import InvalidDocument, InvalidType, MissingKey, ValidationError
 from tests.fixtures import Thief
 
 
@@ -121,6 +121,19 @@ class TestValidate(object):
         thief_schema.add_field("age", f.String(optional=True))
         assert "age" not in thief_data
         thief_schema.validate(thief_data, mapper)
+
+    def test_raise_error_using_global_validators(self):
+        def validator(data, path):
+            raise ValidationError("error", path)
+        schema = Schema({}, validators=validator)
+
+        with pytest.raises(InvalidDocument) as exc:
+            schema.validate(data={}, mapper=None, path=[])
+
+        errors = exc.value
+        assert len(errors) == 1
+        error = errors[0]
+        assert str(error) == "error"
 
 
 class TestCopy(object):
