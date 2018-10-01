@@ -72,6 +72,12 @@ class TestDump(object):
         data = thief_schema.dump(thief, mapper)
         assert data == thief_data
 
+    def test_do_not_dump_write_only_attribute(self, thief_schema, thief, thief_data, mapper):
+        thief_schema.add_field("lastName", f.String(write_only=True))
+        data = thief_schema.dump(thief, mapper)
+        del thief_data["lastName"]
+        assert data == thief_data
+
 
 class TestAddField(object):
     def test_add_new_field_to_schema(self, thief_schema, thief, thief_data, mapper):

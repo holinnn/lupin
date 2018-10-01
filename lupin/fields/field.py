@@ -20,7 +20,7 @@ def _make_processor(processors):
 class Field(object):
     """Generic field that does not convert the values"""
 
-    def __init__(self, binding=None, default=None, validators=None, read_only=False,
+    def __init__(self, binding=None, default=None, validators=None, read_only=False, write_only=False,
                  optional=False, allow_none=False, pre_load=None, post_load=None,
                  pre_dump=None, post_dump=None):
         """
@@ -29,6 +29,7 @@ class Field(object):
             default (object): default value if data is absent
             validators (list|ValidatorsCombination|Validator): list of validators or a combination a validators
             read_only (bool): if True the field will only be used to serialize data
+            write_only (bool): if True the field will only be used to load data
             optional (bool): if True it won't raise an error if no value provided for this field
             allow_none (bool): if True None is a accepted has a valid value
             pre_load (list): list of processors to execute before loading the value
@@ -49,6 +50,7 @@ class Field(object):
         self.default = default
         self._validators = validators or []
         self.is_read_only = read_only
+        self.is_write_only = write_only
         self.is_optional = optional
         self._pre_load_processor = _make_processor(pre_load)
         self._post_load_processor = _make_processor(post_load)
