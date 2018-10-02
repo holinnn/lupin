@@ -44,7 +44,7 @@ class Field(object):
             validators = ValidatorsAndCombination(validators)
 
         if allow_none:
-            validators = validators | IsNone()
+            validators = IsNone() | validators
 
         self.binding = binding
         self.default = default
