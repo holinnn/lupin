@@ -198,3 +198,11 @@ class TestGetObjectMapping(object):
     def test_raise_error_if_schema_not_registered(self, mapper, jewel_schema):
         with pytest.raises(SchemaNotRegistered):
             mapper.get_object_mapping(object(), [jewel_schema])
+
+    def test_use_custom_method_to_get_type(self, mapper, thief_schema):
+        class JuniorThief:
+            __lupin_type__ = Thief
+
+        thief = JuniorThief()
+        mapping = mapper.get_object_mapping(thief)
+        assert mapping.schema is thief_schema

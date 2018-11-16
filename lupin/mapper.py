@@ -1,4 +1,3 @@
-from copy import copy
 from collections import defaultdict
 
 from . import Mapping, bind
@@ -141,7 +140,7 @@ class Mapper(object):
             Mapping
         """
         try:
-            obj_type = type(obj)
+            obj_type = obj.__lupin_type__ if hasattr(obj, "__lupin_type__") else type(obj)
             if schemas is not None:
                 mappings = [self.get_schema_mapping(schema)
                             for schema in schemas]
