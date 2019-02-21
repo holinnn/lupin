@@ -110,11 +110,15 @@ class Schema(object):
         Returns:
             dict
         """
-        dict_to_filter = {key: (field.extract_attr(obj, mapper, key), field.is_ignore_if_null)
-                          for key, field
-                          in self._fields.items() if not field.is_write_only
-                         }
-        return {key: value for key, (value, filter_if_null) in dict_to_filter.items() if not(value is None and filter_if_null)}
+        dict = {}
+        for key, field in self._fields.items():
+            if field.is_write_only:
+                continue
+            value = field.extract_attr(obj, mapper, key)
+            if field.is_ignore_if_null and value is None:
+                continue
+            dict[key]=value
+        return dict
 
     def validate(self, data, mapper, allow_partial=False, path=None):
         """Validate data with all field validators.
