@@ -78,6 +78,25 @@ class TestDump(object):
         del thief_data["lastName"]
         assert data == thief_data
 
+    def test_do_not_dump_null_ignore_if_null(self, thief_schema, thief, thief_data, mapper):
+        # dump when null and ignore_if_null=False
+        thief.last_name = None
+        data = thief_schema.dump(thief, mapper)
+        assert data["lastName"] is None
+        assert "lastName" in data.keys()
+        # set lastName ignore_if_null
+        thief.last_name = "Lupin"
+        thief_schema.add_field("lastName", f.String(ignore_if_null=True, binding="last_name"))
+        # not null
+        data = thief_schema.dump(thief, mapper)
+        assert data == thief_data
+        # set null
+        thief.last_name = None
+        del thief_data["lastName"]
+        data = thief_schema.dump(thief, mapper)
+        assert data == thief_data
+        assert "lastName" not in data.keys()
+
 
 class TestAddField(object):
     def test_add_new_field_to_schema(self, thief_schema, thief, thief_data, mapper):

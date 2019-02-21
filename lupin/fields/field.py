@@ -22,7 +22,7 @@ class Field(object):
 
     def __init__(self, binding=None, default=None, validators=None, read_only=False, write_only=False,
                  optional=False, allow_none=False, pre_load=None, post_load=None,
-                 pre_dump=None, post_dump=None):
+                 pre_dump=None, post_dump=None, ignore_if_null=False):
         """
         Args:
             binding (str): attribute name to map on object
@@ -36,6 +36,7 @@ class Field(object):
             post_load (list): list of processors to execute after loading the value
             pre_dump (list): list of processors to execute before dumping the value
             post_dump (list): list of processors to execute after dumping the value
+            ignore_if_null (bool): if True the fields will not be serialize when null
         """
         if validators is None:
             validators = ValidatorsNullCombination()
@@ -52,6 +53,7 @@ class Field(object):
         self.is_read_only = read_only
         self.is_write_only = write_only
         self.is_optional = optional
+        self.is_ignore_if_null = ignore_if_null
         self._pre_load_processor = _make_processor(pre_load)
         self._post_load_processor = _make_processor(post_load)
         self._pre_dump_processor = _make_processor(pre_dump)
