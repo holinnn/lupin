@@ -110,15 +110,15 @@ class Schema(object):
         Returns:
             dict
         """
-        dict = {}
+        ret_dict = {}
         for key, field in self._fields.items():
             if field.is_write_only:
                 continue
             value = field.extract_attr(obj, mapper, key)
             if field.is_ignore_if_null and value is None:
                 continue
-            dict[key]=value
-        return dict
+            ret_dict[key] = value
+        return ret_dict
 
     def validate(self, data, mapper, allow_partial=False, path=None):
         """Validate data with all field validators.
