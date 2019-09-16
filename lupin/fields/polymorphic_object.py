@@ -14,19 +14,19 @@ class PolymorphicObject(Field):
                               "painting": painting_schema
                           })
     """
-    def __init__(self, on, schemas, default_on = None, **kwargs):
+    def __init__(self, on, schemas, default_type = None, **kwargs):
         """
         Args:
             on (str): JSON key used to get the object type
             schemas (dict): schemas used for each values used for the `on` key
-            default_on (str): default value if the 'on' field is not available
+            default_type (str): default value if the 'on' field is not available
               usefull for update of schema from List to PolymorphicList
 
         """
         merge_validator(kwargs, Type(dict))
         super(PolymorphicObject, self).__init__(**kwargs)
         self._on = on
-        self._default_on = default_on
+        self._default_type = default_type
         self._schemas_by_json_value = schemas
         self._schemas = list(schemas.values())
 
@@ -43,7 +43,7 @@ class PolymorphicObject(Field):
         if value is None:
             return None
 
-        schema = self._schemas_by_json_value[value.get(self._on, self._default_on)]
+        schema = self._schemas_by_json_value[value.get(self._on, self._default_type)]
         return mapper.load(value, schema)
 
     def dump(self, value, mapper):

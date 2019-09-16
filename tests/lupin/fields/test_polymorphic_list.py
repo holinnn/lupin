@@ -22,7 +22,7 @@ def field(mapper, jewel_schema, painting_schema, money_schema):
                                "painting": painting_schema,
                                "money": money_schema
                            },
-                           default_on="money")
+                           default_type="money")
 
 
 class TestLoad(object):
