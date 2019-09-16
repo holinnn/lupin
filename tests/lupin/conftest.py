@@ -1,7 +1,7 @@
 # coding: utf-8
 import pytest
 
-from lupin import Schema, String, Constant, Int, Mapping
+from lupin import Schema, String, Constant, Int, Mapping, Float
 
 from ..fixtures import Thief, Painting, Jewel
 
@@ -13,6 +13,12 @@ def thief_schema():
         "lastName": String(binding="last_name")
     }, "thief")
 
+@pytest.fixture()
+def money_schema():
+    return Schema({
+        "currency": String(),
+        "amount": Float()
+    })
 
 @pytest.fixture
 def painting_schema():
@@ -85,6 +91,14 @@ def diamond_data():
 
 
 @pytest.fixture
+def money_data():
+    return {
+        "currency": "Pound",
+        "amount": 10000
+    }
+
+
+@pytest.fixture
 def stolen_items(mona_lisa, diamond):
     return [mona_lisa, diamond]
 
@@ -92,3 +106,8 @@ def stolen_items(mona_lisa, diamond):
 @pytest.fixture
 def stolen_items_data(mona_lisa_data, diamond_data):
     return [mona_lisa_data, diamond_data]
+
+
+@pytest.fixture
+def other_stolen_items_data(mona_lisa_data, diamond_data, money_data):
+    return [mona_lisa_data, diamond_data, money_data]

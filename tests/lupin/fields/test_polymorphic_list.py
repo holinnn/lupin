@@ -4,7 +4,7 @@ from lupin import PolymorphicList, Mapper
 from lupin.errors import InvalidType, InvalidDocument, MissingPolymorphicKey,\
     InvalidPolymorphicType
 
-from tests.fixtures import Jewel, Painting
+from tests.fixtures import Jewel, Painting, Money
 
 
 @pytest.fixture
@@ -12,14 +12,17 @@ def mapper():
     return Mapper()
 
 @pytest.fixture
-def field(mapper, jewel_schema, painting_schema):
+def field(mapper, jewel_schema, painting_schema, money_schema):
     mapper.register(Jewel, jewel_schema)
     mapper.register(Painting, painting_schema)
+    mapper.register(Money, money_schema)
     return PolymorphicList(on="type",
                            schemas={
                                "jewel": jewel_schema,
-                               "painting": painting_schema
-                           })
+                               "painting": painting_schema,
+                               "money": money_schema
+                           },
+                           default_on="money")
 
 
 class TestLoad(object):
@@ -32,6 +35,13 @@ class TestLoad(object):
 
     def test_returns_none_if_value_is_null(self, field, mapper):
         assert field.load(None, mapper) is None
+
+    def test_default_on(self, field, other_stolen_items_data, mapper):
+        # test to load items when money has no "type"
+        result = field.load(other_stolen_items_data, mapper)
+        assert len(result) == 3
+        money = result[2]
+        assert isinstance(money, Money)
 
 
 class TestDump(object):
