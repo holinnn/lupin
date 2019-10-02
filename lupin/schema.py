@@ -87,9 +87,7 @@ class Schema(object):
                 continue
             if key in data:
                 raw_value = data[key]
-                value = field.pre_load(raw_value)
-                value = field.load(value, mapper)
-                value = field.post_load(value)
+                value = field.load(raw_value, mapper)
             elif allow_partial:
                 continue
             else:

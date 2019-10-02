@@ -30,7 +30,7 @@ class PolymorphicObject(Field):
         self._schemas_by_json_value = schemas
         self._schemas = list(schemas.values())
 
-    def load(self, value, mapper):
+    def _load(self, value, mapper):
         """Loads python objects from JSON object
 
         Args:
@@ -46,7 +46,7 @@ class PolymorphicObject(Field):
         schema = self._schemas_by_json_value[value.get(self._on, self._default_type)]
         return mapper.load(value, schema)
 
-    def dump(self, value, mapper):
+    def _dump(self, value, mapper):
         """Dump object
 
         Args:

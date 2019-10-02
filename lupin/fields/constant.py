@@ -15,7 +15,7 @@ class Constant(Field):
         super(Constant, self).__init__(**kwargs)
         self._value = value
 
-    def load(self, value, mapper):
+    def _load(self, value, mapper):
         """Returns fixed value
 
         Args:
@@ -27,7 +27,7 @@ class Constant(Field):
         """
         return self._value
 
-    def dump(self, value, mapper):
+    def _dump(self, value, mapper):
         """Returns fixed value
 
         Args:
@@ -41,6 +41,7 @@ class Constant(Field):
 
     def extract_attr(self, obj, mapper, key=None):
         """Returns fixed value
+           using pre_dump and post_dump
 
         Args:
             obj (object): object to get value from
@@ -50,4 +51,4 @@ class Constant(Field):
         Returns:
             object
         """
-        return self._value
+        return self.dump(self._value, mapper)

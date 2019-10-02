@@ -17,7 +17,7 @@ class DateTime(Field):
         super(DateTime, self).__init__(*args, **kwargs)
         self._format = format
 
-    def load(self, value, mapper):
+    def _load(self, value, mapper):
         """Loads a datetime python object from a JSON string
 
         Args:
@@ -32,7 +32,7 @@ class DateTime(Field):
 
         return datetime.strptime(value, self._format)
 
-    def dump(self, value, mapper):
+    def _dump(self, value, mapper):
         """Dump a datetime to string representation
 
         Args:

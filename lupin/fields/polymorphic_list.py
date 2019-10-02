@@ -31,7 +31,7 @@ class PolymorphicList(Field):
         self._schemas_by_json_value = schemas
         self._schemas = list(schemas.values())
 
-    def load(self, value, mapper):
+    def _load(self, value, mapper):
         """Loads list of python objects from JSON list
 
         Args:
@@ -48,7 +48,7 @@ class PolymorphicList(Field):
                 for item
                 in value]
 
-    def dump(self, value, mapper):
+    def _dump(self, value, mapper):
         """Dump list of object
 
         Args:

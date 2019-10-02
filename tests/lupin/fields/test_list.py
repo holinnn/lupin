@@ -1,9 +1,9 @@
 from datetime import datetime
 import pytest
 
-from lupin.fields import List, DateTime
+from lupin.fields import List, DateTime, String
 from lupin.errors import InvalidType
-from lupin import Mapper
+from lupin import Mapper, processors
 
 
 @pytest.fixture
@@ -14,6 +14,14 @@ def mapper():
 @pytest.fixture
 def field():
     return List(DateTime(format="%Y-%m-%d"))
+
+
+@pytest.fixture
+def pre_load_field():
+    return List(String(pre_load=[processors.lower],
+                       post_load=[processors.strip],
+                       post_dump=[processors.upper]),
+                )
 
 
 @pytest.fixture
@@ -41,6 +49,12 @@ class TestLoad(object):
         assert field.load(None, mapper) is None
 
 
+class TestLoadElem(object):
+    def test_returns_a_list_of_processed_element(self, pre_load_field, mapper):
+        result = pre_load_field.load([" ARSENE", "LUPIN "], mapper)
+        assert result == ["arsene", "lupin"]
+
+
 class TestDump(object):
     def test_returns_a_list_of_datetime_strings(self, field, datetimes, datetime_strings, mapper):
         result = field.dump(datetimes, mapper)
@@ -48,6 +62,12 @@ class TestDump(object):
 
     def test_returns_none_if_value_is_null(self, field, mapper):
         assert field.dump(None, mapper) is None
+
+
+class TestDumpElem(object):
+    def test_return_a_list_of_processed_element(self, pre_load_field, mapper):
+        result = pre_load_field.dump(["arsene", "lupin"], mapper)
+        assert result == ["ARSENE", "LUPIN"]
 
 
 class TestValidate(object):

@@ -18,12 +18,12 @@ def field():
 
 class TestDump(object):
     def test_returns_the_same_value(self, field, mapper):
-        assert field.dump("46", mapper) == "46"
+        assert field._dump("46", mapper) == "46"
 
 
 class TestLoad(object):
     def test_returns_the_same_value(self, field, mapper):
-        assert field.load("46", mapper) == "46"
+        assert field._load("46", mapper) == "46"
 
 
 class TestPreLoad(object):
@@ -34,6 +34,16 @@ class TestPreLoad(object):
 class TestPostLoad(object):
     def test_use_default_processor(self, field):
         assert field.post_load("hello") == "hello"
+
+
+class TestFullLoad(object):
+    def test_use_pre_and_post_load(self, field, mapper):
+        assert field.load("hello", mapper) == "HELLO"
+
+
+class TestFullDump(object):
+    def test_use_pre_and_post_dump(self, field, mapper):
+        assert field.dump("  LUPIN ", mapper) == "lupin"
 
 
 class TestExtractAttr(object):

@@ -18,7 +18,7 @@ class Object(Field):
         super(Object, self).__init__(*args, **kwargs)
         self._schema = schema
 
-    def load(self, value, mapper):
+    def _load(self, value, mapper):
         """Loads python object from JSON object
 
         Args:
@@ -33,7 +33,7 @@ class Object(Field):
 
         return mapper.load(value, self._schema)
 
-    def dump(self, value, mapper):
+    def _dump(self, value, mapper):
         """Dump object into its JSON representation
 
         Args:

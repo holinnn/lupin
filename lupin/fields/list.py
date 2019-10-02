@@ -17,7 +17,7 @@ class List(Field):
         super(List, self).__init__(**kwargs)
         self._field = field
 
-    def load(self, value, mapper):
+    def _load(self, value, mapper):
         """Loads list of python objects from JSON list
 
         Args:
@@ -30,9 +30,10 @@ class List(Field):
         if value is None:
             return None
 
-        return [self._field.load(item, mapper) for item in value]
+        return [self._field.load(item, mapper)
+                for item in value]
 
-    def dump(self, value, mapper):
+    def _dump(self, value, mapper):
         """Dump list of object
 
         Args:
@@ -45,7 +46,8 @@ class List(Field):
         if value is None:
             return None
 
-        return [self._field.dump(item, mapper) for item in value]
+        return [self._field.dump(item, mapper)
+                for item in value]
 
     def validate(self, value, path, mapper):
         """Validate each items of list against nested field validators.

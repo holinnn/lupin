@@ -73,6 +73,22 @@ class Field(object):
 
     def load(self, value, mapper):
         """Loads python object from JSON value
+            using pre_load and post_load
+        Args:
+            value (object): a value
+            mapper (Mapper): mapper used to load data
+
+        Returns:
+            object
+        """
+
+        value = self.pre_load(value)
+        value = self._load(value, mapper)
+        value = self.post_load(value)
+        return value
+
+    def _load(self, value, mapper):
+        """Loads python object from JSON value
 
         Args:
             value (object): a value
@@ -84,6 +100,21 @@ class Field(object):
         return value
 
     def dump(self, value, mapper):
+        """Dump value to its JSON representation
+           using pre_dump and post_dump
+            Args:
+                value (object): a value
+                mapper (Mapper): mapper used to dump data
+
+            Returns:
+                object
+        """
+        value = self._pre_dump(value)
+        value = self._dump(value, mapper)
+        value = self._post_dump(value)
+        return value
+
+    def _dump(self, value, mapper):
         """Dump value to its JSON representation
 
         Args:
@@ -110,9 +141,7 @@ class Field(object):
         """
         key = self.binding or key
         raw_value = getattr(obj, key)
-        value = self._pre_dump(raw_value)
-        value = self.dump(value, mapper)
-        return self._post_dump(value)
+        return self.dump(raw_value, mapper)
 
     def validate(self, value, path, mapper):
         """Validate value againt field validators
