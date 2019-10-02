@@ -1,9 +1,9 @@
 # coding: utf-8
 import pytest
 
-from lupin import Schema, String, Constant, Int, Mapping, Float
+from lupin import Schema, String, Constant, Int, Mapping, Float, processors, List
 
-from ..fixtures import Thief, Painting, Jewel
+from ..fixtures import Thief, Painting, Jewel, Book
 
 
 @pytest.fixture
@@ -97,6 +97,25 @@ def money_data():
         "amount": 10000
     }
 
+
+def reduce_to(n):
+    """processor to reduce list"""
+    def reduce(list):
+        if len(list) < n:
+            return n
+        else:
+            return list[0:n]
+    return reduce
+
+
+@pytest.fixture
+def book_schema():
+    return Schema({
+        "title": String(pre_load=[processors.lower]),
+        "authors": List(String(pre_load=[processors.lower]),
+                        pre_load=[reduce_to(2)]),
+        "type": Constant("book")
+    }, "book")
 
 @pytest.fixture
 def stolen_items(mona_lisa, diamond):

@@ -4,7 +4,7 @@ import pytest
 from lupin import Constant, fields as f, Mapper, Schema
 from lupin.processors import strip, lower
 from lupin.errors import InvalidDocument, InvalidType, MissingKey, ValidationError
-from tests.fixtures import Thief
+from tests.fixtures import Thief, Book
 
 
 @pytest.fixture
@@ -65,6 +65,15 @@ class TestLoadAttrs(object):
             "last_name": "lupin",
             "first_name": "Arsène"
         }
+
+    def test_load_list_pre_load(self, book_schema, mapper):
+        """check pre_load is called on elements of the list, and the pre_load of the list also"""
+        book = book_schema.load(Book,
+                                {"title": "MYLIFE",
+                                 "authors": ["ME", "MYSELF", "I"]},
+                                mapper)
+        assert book.title == "mylife"
+        assert book.authors == ["me", "myself"]
 
 
 class TestDump(object):
