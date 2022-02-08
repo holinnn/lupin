@@ -125,12 +125,12 @@ class Mapper(object):
 
         schemas = (schema,) if schema else None
 
-        if not use_unregistreted_schema:
-            mapping = self.get_object_mapping(obj, schemas)
-
-            return mapping.dump(obj, self)
-        else:
+        if use_unregistreted_schema:
             return schema.dump(obj, self)
+
+        mapping = self.get_object_mapping(obj, schemas)
+
+        return mapping.dump(obj, self)
 
     def get_object_mapping(self, obj, schemas=None):
         """Get mapping of obj.
