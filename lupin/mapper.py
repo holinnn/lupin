@@ -108,14 +108,15 @@ class Mapper(object):
         mapping = self.get_schema_mapping(schema)
         return mapping.load_attrs(data, self, allow_partial=allow_partial)
 
-    def dump(self, obj, schema=None):
+    def dump(self, obj, schema=None, use_unregistreted_schema=False):
         """Dump object into its JSON representation.
         If no schema provided the one used on register() will be used.
 
         Args:
             obj (object|list): object to dump
             schema (Schema|str): force a schema to dump object (Schema object or a name)
-
+            use_unregistreted_schema (bool): if true don't raise is the given schema is
+                not registrated and use it directly to dump the object
         Returns:
             dict
         """
@@ -123,9 +124,13 @@ class Mapper(object):
             return [self.dump(item, schema) for item in obj]
 
         schemas = (schema,) if schema else None
-        mapping = self.get_object_mapping(obj, schemas)
 
-        return mapping.dump(obj, self)
+        if not use_unregistreted_schema:
+            mapping = self.get_object_mapping(obj, schemas)
+
+            return mapping.dump(obj, self)
+        else:
+            return schema.dump(obj, self)
 
     def get_object_mapping(self, obj, schemas=None):
         """Get mapping of obj.

@@ -1,7 +1,7 @@
 # coding: utf-8
 import pytest
 
-from lupin import Mapper, Schema
+from lupin import Mapper, Schema, String
 from lupin.errors import MissingMapping, SchemaAlreadyRegistered, InvalidDocument, \
     InvalidPolymorphicType, SchemaNotRegistered
 from tests.fixtures import Thief, Painting, Jewel
@@ -48,6 +48,14 @@ class TestDump(object):
     def test_raises_exception_if_no_mapping(self, mapper):
         with pytest.raises(MissingMapping):
             mapper.dump(46)
+
+    def test_dont_raises_if_used_with_use_unregisteted_schema_set_to_true(self, mapper, thief, thief_data):
+        super_thief_schema = Schema({
+        "firstName": String(binding="first_name"),
+        "lastName": String(binding="last_name"),
+    }, "thief")
+        data = mapper.dump(thief, super_thief_schema, use_unregistreted_schema=True)
+        assert data == thief_data
 
     def test_works_with_schema_name(self, mapper, thief, thief_data):
         data = mapper.dump(thief, "thief")
