@@ -1,6 +1,6 @@
-pytest-cov==2.5.1
-pytest==3.2.3
-pytest-sugar==0.9.1
-ipdb==0.11.0
+pytest~=7.0.0
+pytest-cov
+pytest-sugar
+ipdb
 tox==3.0.0
 pypandoc==1.4.0
