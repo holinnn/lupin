@@ -1,4 +1,4 @@
-from six.moves.urllib.parse import urlparse
+from urllib.parse import urlparse
 from . import Validator
 from ..errors import InvalidURL
 
