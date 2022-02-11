@@ -1,6 +1,5 @@
 # lupin is a Python JSON object mapper
 
-[![Build Status](https://travis-ci.org/holinnn/lupin.svg)](https://travis-ci.org/holinnn/lupin)
 
 lupin is meant to help in serializing python objects to JSON and unserializing JSON data to python objects.
 
