@@ -2,5 +2,5 @@ pytest~=7.0.0
 pytest-cov
 pytest-sugar
 ipdb
-tox==3.0.0
+tox
 pypandoc==1.4.0

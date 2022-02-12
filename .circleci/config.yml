@@ -1,0 +1,50 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@1.5.0
+
+jobs:
+  test_py36: &test
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+          pip-dependency-file: test-requirements.txt
+      - run:
+          name: Install package
+          command: pip install .
+      - run:
+          name: Run tests
+          command: pytest
+    docker:
+      - image: cimg/python:3.6.15
+  test_py37:
+    <<: *test
+    docker:
+      - image: cimg/python:3.7.12
+  test_py38:
+    <<: *test
+    docker:
+      - image: cimg/python:3.8.12
+  test_py39:
+    <<: *test
+    docker:
+      - image: cimg/python:3.9.9
+  test_py310:
+    <<: *test
+    docker:
+      - image: cimg/python:3.10.1
+  test_pypy3:
+    <<: *test
+    docker:
+      - image: pypy:3.8-7.3.7
+
+workflows:
+  main:
+    jobs:
+      - test_pypy3
+      - test_py36
+      - test_py37
+      - test_py38
+      - test_py39
+      - test_py310
